@@ -1,76 +1,59 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
-#include <QMetaObject>
-#include <QMetaProperty>
 #include "CPUInfo.h"
 
-CPUInfo::CPUInfo()
-{
 
+bool CPUPolicy::isEmpty()
+{
+    return name.isEmpty() && value.isEmpty();
 }
 
 CPUCore::CPUCore(const QDir &cpuDir)
 {
-    m_cpuDir = cpuDir;
-    if (!cpuDir.exists())
+    m_coreDir = cpuDir;
+    if (cpuDir.exists())
+    {
+        // load policies
+        update();
+    }
+    else
+    {
         qDebug() << "CPU Dir is not exist";
+    }
 }
 
-unsigned int CPUCore::cpuinfo_max_freq() const
+CPUPolicy CPUCore::findPolicyByName(QString name)
 {
-    return m_cpuinfo_max_freq;
+    for (auto &policy : policies)
+    {
+        if (name == policy.name)
+            return policy;
+    }
+    return CPUPolicy();
 }
 
-unsigned int CPUCore::cpuinfo_min_freq() const
+bool CPUCore::setPolicy(QString name, QVariant value)
 {
-    return m_cpuinfo_min_freq;
+    bool ret = false;
+    for (auto &policy : policies)
+    {
+        if (policy.isWriteable && policy.name == name)
+        {
+            policy.value = value.toString();
+            QFile file(m_coreDir.absoluteFilePath("cpufreq/" + name));
+            if (file.exists() && file.open(QIODevice::WriteOnly))
+            {
+                file.write(value.toString().toLatin1());
+                file.close();
+                ret = true;
+                break;
+            }
+        }
+    }
+    return ret;
 }
 
-unsigned int CPUCore::scaling_max_freq() const
-{
-    return m_scaling_max_freq;
-}
-
-unsigned int CPUCore::scaling_min_freq() const
-{
-    return m_scaling_min_freq;
-}
-
-unsigned int CPUCore::scaling_cur_freq() const
-{
-    return m_scaling_cur_freq;
-}
-
-QString CPUCore::scaling_available_governors() const
-{
-    return m_scaling_available_governors;
-}
-
-QString CPUCore::scaling_governor() const
-{
-    return m_scaling_governor;
-}
-
-QString CPUCore::scaling_driver() const
-{
-    return m_scaling_driver;
-}
-
-void CPUCore::set_scaling_max_freq(unsigned int scaling_max_freq)
-{
-    m_scaling_max_freq = scaling_max_freq;
-}
-
-void CPUCore::set_scaling_min_freq(unsigned int scaling_min_freq)
-{
-    m_scaling_min_freq = scaling_min_freq;
-}
-
-void CPUCore::set_scaling_governor(QString scaling_governor)
-{
-    m_scaling_governor = scaling_governor;
-}
 
 bool CPUCore::update()
 {
@@ -78,43 +61,73 @@ bool CPUCore::update()
 
     // get core id
     QFile file;
-    file.setFileName(m_cpuDir.absoluteFilePath("topology/core_id"));
+    file.setFileName(m_coreDir.absoluteFilePath("topology/core_id"));
     ret = file.exists() && file.open(QIODevice::ReadOnly) && ret;
     if (ret)
     {
         core_id = file.readAll().toShort();
         file.close();
     }
-    // get properties value
-    const QMetaObject* metaObject = this->metaObject();
-    for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
+    // is online ?
+    file.setFileName(m_coreDir.absoluteFilePath("online"));
+    if (file.exists() && file.open(QIODevice::ReadOnly))
     {
-        const char *key = metaObject->property(i).name();
-        file.setFileName(m_cpuDir.absoluteFilePath("cpufreq/" + QString(key)));
-        // don't use ret for dynamic property
-        if (file.exists() && file.open(QIODevice::ReadOnly))
+        isOnline = file.readAll().toInt();
+    }
+    // get policies
+    policies.clear();
+    QDir policyDir(m_coreDir.absoluteFilePath("cpufreq/"));
+    auto infoList = policyDir.entryInfoList(QDir::Files | QDir::NoSymLinks);
+    for (auto &info : infoList)
+    {
+        CPUPolicy policy;
+        policy.name = info.fileName();
+        file.setFileName(policyDir.absoluteFilePath(policy.name));
+        if (file.open(QIODevice::ReadOnly))
         {
-            this->setProperty(key, file.readAll().trimmed());
+            policy.value = file.readAll().trimmed();
             file.close();
         }
+        policy.isReadable = info.isReadable();
+        policy.isWriteable = info.isWritable();
+        policies.append(policy);
     }
 
     return ret;
-
 }
 
-bool CPUCore::writePropertyToFile(QString key)
+CPUInfo::CPUInfo() : m_cpuDir("/sys/devices/system/cpu")
 {
-    qDebug() << "aaa";
-    bool ret = true;
-    QFile file;
-    file.setFileName(m_cpuDir.absoluteFilePath("cpufreq/" + key));
-    // qDebug() << file.fileName();
-    ret = file.exists() && file.open(QIODevice::WriteOnly) && ret;
-    if (ret)
+    // get cores info
+    auto dirList = m_cpuDir.entryList(QDir::Dirs);
+    for (auto &fileName : dirList)
     {
-        file.write(this->property(key.toLatin1().data()).toByteArray().trimmed());
-        file.close();
+        if (fileName.startsWith("cpu") && fileName.count() > 3 && fileName[3].isNumber())
+        {
+            if (fileName.count() == 4 || (fileName.count() == 5 && fileName[4].isNumber()))
+                cores.append(CPUCore(QDir(m_cpuDir.absoluteFilePath(fileName))));
+        }
     }
-    return  ret;
+    // get model name
+    QFile cpuinfo("/proc/cpuinfo");
+    QString line;
+    if (cpuinfo.open(QIODevice::ReadOnly))
+    {
+        while(true)
+        {
+            line = cpuinfo.readLine();
+            if (!line.isEmpty())
+            {
+                if (line.startsWith("model name"))
+                {
+                    modelName = line.split(":")[1].trimmed();
+                    break;
+                }
+            }
+            else
+                break;
+        }
+
+        cpuinfo.close();
+    }
 }
