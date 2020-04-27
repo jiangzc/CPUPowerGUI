@@ -23,6 +23,19 @@ CPUCore::CPUCore(const QDir &cpuDir)
     }
 }
 
+bool CPUCore::setEnabled(bool enable)
+{
+    bool ret = false;
+    QFile file(m_coreDir.absoluteFilePath("online"));
+    if (file.exists() && file.open(QIODevice::WriteOnly))
+    {
+        if (file.write(enable ? "1" : "0") != -1)
+            ret = true;
+        file.close();
+    }
+    return ret;
+}
+
 CPUPolicy CPUCore::findPolicyByName(QString name)
 {
     for (auto &policy : policies)
