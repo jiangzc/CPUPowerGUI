@@ -17,9 +17,9 @@ DisplayUI::DisplayUI(QWidget *parent)
 //    qDebug() << cpuInfo.cores[3].setEnabled(true);
 
     qDebug() <<  cpuInfo.cores[0].setPolicy(KnownCPUPolicy::cpuinfo_max_freq, 2000*1000);
-    qDebug() <<  cpuInfo.cores[1].setPolicy("scaling_max_freq", 2000*1000);
-    qDebug() <<  cpuInfo.cores[2].setPolicy("scaling_max_freq", 2000*1000);
-    qDebug() <<  cpuInfo.cores[3].setPolicy("scaling_max_freq", 2000*1000);
+    qDebug() <<  cpuInfo.cores[1].setPolicy(KnownCPUPolicy::cpuinfo_max_freq, 2000*1000);
+    qDebug() <<  cpuInfo.cores[2].setPolicy(KnownCPUPolicy::cpuinfo_max_freq, 2000*1000);
+    qDebug() <<  cpuInfo.cores[3].setPolicy(KnownCPUPolicy::cpuinfo_max_freq, 2000*1000);
 
 
 

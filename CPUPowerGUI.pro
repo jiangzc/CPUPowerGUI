@@ -25,13 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        CPUInfo.cpp \
-        main.cpp \
-        DisplayUI.cpp
+        src/CPUCore.cpp \
+        src/CPUInfo.cpp \
+        src/CPUPolicy.cpp \
+        src/main.cpp \
+        src/DisplayUI.cpp
 
 HEADERS += \
-        CPUInfo.h \
-        DisplayUI.h
+        src/CPUCore.h \
+        src/CPUInfo.h \
+        src/CPUPolicy.h \
+        src/DisplayUI.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
