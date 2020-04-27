@@ -30,7 +30,10 @@ bool CPUCore::setEnabled(bool enable)
     if (file.exists() && file.open(QIODevice::WriteOnly))
     {
         if (file.write(enable ? "1" : "0") != -1)
+        {
             ret = true;
+            isOnline = enable;
+        }
         file.close();
     }
     return ret;
@@ -57,9 +60,9 @@ bool CPUCore::setPolicy(QString name, QVariant value)
             QFile file(m_coreDir.absoluteFilePath("cpufreq/" + name));
             if (file.exists() && file.open(QIODevice::WriteOnly))
             {
-                file.write(value.toString().toLatin1());
+                if (file.write(value.toString().toLatin1()) != -1)
+                    ret = true;
                 file.close();
-                ret = true;
                 break;
             }
         }
@@ -78,7 +81,7 @@ bool CPUCore::update()
     ret = file.exists() && file.open(QIODevice::ReadOnly) && ret;
     if (ret)
     {
-        core_id = file.readAll().toShort();
+        m_core_id = file.readAll().toShort();
         file.close();
     }
     // is online ?
@@ -86,6 +89,7 @@ bool CPUCore::update()
     if (file.exists() && file.open(QIODevice::ReadOnly))
     {
         isOnline = file.readAll().toInt();
+        file.close();
     }
     // get policies
     policies.clear();

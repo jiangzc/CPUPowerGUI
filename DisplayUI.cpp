@@ -11,8 +11,15 @@ DisplayUI::DisplayUI(QWidget *parent)
 
     CPUInfo cpuInfo;
 
+    qDebug() << cpuInfo.cores[0].setEnabled(true);
+    qDebug() << cpuInfo.cores[1].setEnabled(true);
+    qDebug() << cpuInfo.cores[2].setEnabled(true);
+    qDebug() << cpuInfo.cores[5].setEnabled(true);
 
-    qDebug() << "aaa";
+    qDebug() << cpuInfo.cores[0].isEnabled();
+    qDebug() << cpuInfo.cores[1].isEnabled();
+    qDebug() << cpuInfo.cores[2].isEnabled();
+    qDebug() << cpuInfo.cores[5].isEnabled();
 
 }
 
