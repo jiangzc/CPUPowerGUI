@@ -11,6 +11,7 @@ class CPUCore
 {
 
 public:
+    CPUCore() {} // fix error in Qt version 5.7.1
     CPUCore(const QDir &cpuDir);
     short core_id();
     bool isEnabled();

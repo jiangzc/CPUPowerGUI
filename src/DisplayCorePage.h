@@ -2,12 +2,9 @@
 #define DISPLAYCOREPAGE_H
 
 #include <QWidget>
-#include <QLabel>
-#include <QPlainTextEdit>
-#include <QTreeWidget>
 #include <QFormLayout>
-#include <QTreeWidgetItem>
 
+class CPUPolicy;
 class CPUCore;
 
 class DisplayCorePage : public QWidget
@@ -17,10 +14,13 @@ public:
     explicit DisplayCorePage(QWidget *parent = nullptr);
 
 private:
-    //QTreeWidget *infoList;
-    QFormLayout *mainLayout;
+    QWidget *infoList;
+    QFormLayout *infoLayout;
     CPUCore *core;
-    QWidget* processPolicyValue(const QString &name);
+    QTimer *timer;
+    QWidget* getPolicyValueWidget(const CPUPolicy &policy);
+    QString processPolicyValue(const CPUPolicy &policy);
+    void updatePolicyValue(const CPUPolicy &policy);
 signals:
 
 public slots:

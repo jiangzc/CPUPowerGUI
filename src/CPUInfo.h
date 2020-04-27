@@ -17,4 +17,6 @@ private:
     QDir m_cpuDir;
 };
 
+extern CPUInfo cpuInfo;
+
 #endif // CPUINFO_H
