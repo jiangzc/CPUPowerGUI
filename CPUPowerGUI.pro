@@ -28,6 +28,7 @@ SOURCES += \
         src/CPUCore.cpp \
         src/CPUInfo.cpp \
         src/CPUPolicy.cpp \
+        src/DisplayCorePage.cpp \
         src/main.cpp \
         src/DisplayUI.cpp
 
@@ -35,6 +36,7 @@ HEADERS += \
         src/CPUCore.h \
         src/CPUInfo.h \
         src/CPUPolicy.h \
+        src/DisplayCorePage.h \
         src/DisplayUI.h
 
 # Default rules for deployment.

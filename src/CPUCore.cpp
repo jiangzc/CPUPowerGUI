@@ -106,3 +106,7 @@ bool CPUCore::update()
 
     return ret;
 }
+
+short CPUCore::core_id() { return m_core_id; }
+
+bool CPUCore::isEnabled() { return isOnline; }
