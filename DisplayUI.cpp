@@ -11,15 +11,17 @@ DisplayUI::DisplayUI(QWidget *parent)
 
     CPUInfo cpuInfo;
 
-    qDebug() << cpuInfo.cores[0].setEnabled(true);
-    qDebug() << cpuInfo.cores[1].setEnabled(true);
-    qDebug() << cpuInfo.cores[2].setEnabled(true);
-    qDebug() << cpuInfo.cores[5].setEnabled(true);
+//    qDebug() << cpuInfo.cores[0].setEnabled(true);
+//    qDebug() << cpuInfo.cores[1].setEnabled(true);
+//    qDebug() << cpuInfo.cores[2].setEnabled(true);
+//    qDebug() << cpuInfo.cores[3].setEnabled(true);
 
-    qDebug() << cpuInfo.cores[0].isEnabled();
-    qDebug() << cpuInfo.cores[1].isEnabled();
-    qDebug() << cpuInfo.cores[2].isEnabled();
-    qDebug() << cpuInfo.cores[5].isEnabled();
+    qDebug() <<  cpuInfo.cores[0].setPolicy(KnownCPUPolicy::cpuinfo_max_freq, 2000*1000);
+    qDebug() <<  cpuInfo.cores[1].setPolicy("scaling_max_freq", 2000*1000);
+    qDebug() <<  cpuInfo.cores[2].setPolicy("scaling_max_freq", 2000*1000);
+    qDebug() <<  cpuInfo.cores[3].setPolicy("scaling_max_freq", 2000*1000);
+
+
 
 }
 
