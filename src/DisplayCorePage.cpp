@@ -63,7 +63,6 @@ DisplayCorePage::DisplayCorePage(QWidget *parent) : QWidget(parent)
     timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]{
         core->update();
-        qDebug() << core->findPolicyByName(KnownCPUPolicy::scaling_cur_freq).value;
         for (const auto &policy : core->policies)
         {
             this->updatePolicyValue(policy);
