@@ -4,6 +4,12 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPlainTextEdit>
+#include <QTreeWidget>
+#include <QFormLayout>
+#include <QTreeWidgetItem>
+
+class CPUCore;
+
 class DisplayCorePage : public QWidget
 {
     Q_OBJECT
@@ -11,7 +17,10 @@ public:
     explicit DisplayCorePage(QWidget *parent = nullptr);
 
 private:
-    QPlainTextEdit *infoList;
+    //QTreeWidget *infoList;
+    QFormLayout *mainLayout;
+    CPUCore *core;
+    QWidget* processPolicyValue(const QString &name);
 signals:
 
 public slots:

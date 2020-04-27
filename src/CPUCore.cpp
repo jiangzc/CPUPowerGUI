@@ -99,8 +99,8 @@ bool CPUCore::update()
             policy.value = file.readAll().trimmed();
             file.close();
         }
-        policy.isReadable = info.isReadable();
-        policy.isWriteable = info.isWritable();
+        policy.isReadable = info.permission(QFileDevice::ReadOwner);
+        policy.isWriteable = info.permission(QFileDevice::WriteOwner);
         policies.append(policy);
     }
 
