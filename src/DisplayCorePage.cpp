@@ -61,7 +61,7 @@ QString DisplayCorePage::processPolicyValue(const CPUPolicy &policy)
         res.clear();
         for (const auto &item : freqList)
         {
-            res.append(item + "\n");
+            res.append(QString("%0 MHz\n").arg(item.toInt() / 1000));
         }
         res.remove(res.count() - 1, 1);
     }
