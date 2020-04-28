@@ -29,6 +29,7 @@ SOURCES += \
         src/CPUInfo.cpp \
         src/CPUPolicy.cpp \
         src/DisplayCorePage.cpp \
+        src/MainWindow.cpp \
         src/main.cpp \
         src/DisplayUI.cpp
 
@@ -37,7 +38,8 @@ HEADERS += \
         src/CPUInfo.h \
         src/CPUPolicy.h \
         src/DisplayCorePage.h \
-        src/DisplayUI.h
+        src/DisplayUI.h \
+        src/MainWindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

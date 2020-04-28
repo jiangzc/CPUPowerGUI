@@ -9,6 +9,8 @@
 #include <QSlider>
 #include <QComboBox>
 #include <QBrush>
+#include <QMouseEvent>
+#include <QPushButton>
 #include <QLineEdit>
 #include <QListView>
 #include <QFormLayout>
@@ -20,17 +22,35 @@
 
 bool DisplayCorePage::eventFilter(QObject *obj, QEvent *event)
  {
+     QPainter painter;
      if (obj == area && event->type() == QEvent::Paint)
      {
-         QPainter painter(area);
-         painter.setRenderHint(QPainter::Antialiasing);
-         painter.setPen(Qt::NoPen);
+         painter.begin(area);
          QBrush brush(QColor(222,222,222,200));
+         painter.setPen(Qt::NoPen);
          painter.setBrush(brush);
+         painter.setRenderHint(QPainter::Antialiasing);
          painter.drawRoundedRect(area->rect(), 12, 12);
          return true;
      }
-
+     else if (obj == editor && event->type() == QEvent::Paint)
+     {
+         painter.begin(editor);
+         painter.setRenderHint(QPainter::Antialiasing);
+         QBrush brush(QColor(222,222,222,200));
+         painter.setPen(Qt::NoPen);
+         painter.setBrush(brush);
+         painter.drawRoundedRect(editor->rect(), 12, 12);
+         return true;
+     }
+     else if (dynamic_cast<QSlider*>(obj) != nullptr && event->type() == QEvent::MouseButtonPress)
+     {
+         QSlider *slider = dynamic_cast<QSlider*>(obj);
+         QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
+         double offset = 1.0 * mouseEvent->x() / slider->width() * (slider->maximum() - slider->minimum());
+         slider->setValue( slider->minimum() + int(offset));
+         return false;
+     }
      else
          return QWidget::eventFilter(obj, event);
  }
@@ -109,15 +129,12 @@ QWidget* DisplayCorePage::getEdiorPolicyValueWidget(const CPUPolicy &policy)
                 comboBox->setCurrentIndex(i);
         }
         ret = comboBox;
+        ret->setMaximumWidth(200);
     }
-    else if (policy.name == KnownCPUPolicy::scaling_max_freq)
+    else if (policy.name == KnownCPUPolicy::scaling_max_freq || policy.name == KnownCPUPolicy::scaling_min_freq)
     {
         QSlider *slider = new QSlider(Qt::Horizontal);
-        return slider;
-    }
-    else if (policy.name == KnownCPUPolicy::scaling_min_freq)
-    {
-        QSlider *slider = new QSlider(Qt::Horizontal);
+        slider->installEventFilter(this);
         return slider;
     }
     else
@@ -125,6 +142,7 @@ QWidget* DisplayCorePage::getEdiorPolicyValueWidget(const CPUPolicy &policy)
         QLineEdit *lineEdit = new QLineEdit;
         lineEdit->setText(policy.value);
         ret = lineEdit;
+        ret->setMaximumWidth(200);
     }
     return ret;
 }
@@ -134,14 +152,17 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 {
 
     this->core = &_core;
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
+    this->setPalette(palette);
+    this->setAutoFillBackground(true);
 
     // 展示CPU频率信息控件
     infoList = new QWidget();
-    QPalette palette = infoList->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
     infoList->setAutoFillBackground(true);
-    infoList->setPalette(palette);
+    infoList->setPalette(palette); //透明背景
     infoList->setContentsMargins(5,5,5,5);
+
 
     // 控件内布局
     infoLayout = new QFormLayout(infoList);
@@ -167,27 +188,52 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 
     // 编辑器控件
     editor = new QWidget(this);
-    palette = infoList->palette();
+    palette = editor->palette();
     palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
     editor->setAutoFillBackground(true);
     editor->setPalette(palette);
     editor->setContentsMargins(5,5,5,5);
+    editor->installEventFilter(this);
 
     // 控件内布局
-    editorLayout = new QGridLayout(editor);
-    for (const auto &item : core->policies)
-    {
-        if (item.isWriteable)
-        {
-            QWidget *widget = getEdiorPolicyValueWidget(item);
-            if (widget != nullptr)
-                editorLayout->addWidget(widget);
-        }
+    editorLayout = new QGridLayout;
 
+    editorLayout->setSpacing(20);
+
+    int row = 0;
+    for (const auto &policy : core->policies)
+    {
+        if (policy.isWriteable)
+        {
+            QLabel *label = new QLabel;
+            label->setMaximumWidth(200);
+            label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            label->setText(policy.name);
+            QWidget *widget = getEdiorPolicyValueWidget(policy);
+            if (widget != nullptr)
+            {
+                editorLayout->setRowMinimumHeight(row, 40);
+                widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                widget->setFixedHeight(40);
+                editorLayout->addWidget(label, row, 0);
+                editorLayout->addWidget(widget, row, 1);
+                editorLayout->setRowMinimumHeight(row, 20);
+                row++;
+            }
+        }
     }
+
+    QPushButton *applyButton = new QPushButton;
+    applyButton->setText("Apply");
+    //editorLayout.set
+    // applyButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    applyButton->setFixedWidth(120);
+    applyButton->setFixedHeight(40);
+    editorLayout->addWidget(applyButton, row+ 1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
     editor->setLayout(editorLayout);
+    editorLayout->update();
     editor->move(500, 50);
-    editor->adjustSize();
+    editor->resize(500,400);
 
     // 每秒刷新
     timer = new QTimer();

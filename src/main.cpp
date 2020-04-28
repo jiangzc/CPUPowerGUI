@@ -6,6 +6,7 @@
 #include "DisplayUI.h"
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
+#include "MainWindow.h"
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -31,8 +32,9 @@ int main(int argc, char *argv[])
     a.setPalette( QPalette(QColor(247, 247, 247) ));
 
     CPUInfo cpuInfo;
-    DisplayCorePage w(cpuInfo.cores[1]);
-
+    MainWindow w;
+    DisplayCorePage w2(cpuInfo.cores[1], &w);
+    w.resize(1100,600);
     w.show();
     return a.exec();
 }
