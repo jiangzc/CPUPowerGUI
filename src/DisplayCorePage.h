@@ -2,12 +2,12 @@
 #define DISPLAYCOREPAGE_H
 
 #include <QWidget>
-#include <QFormLayout>
-#include <QPixmap>
 
 class CPUPolicy;
 class CPUCore;
 class QScrollArea;
+class QGridLayout;
+class QFormLayout;
 
 class DisplayCorePage : public QWidget
 {
@@ -20,14 +20,19 @@ protected:
 
 private:
     QWidget *infoList;
+    QWidget *editor;
+    QGridLayout *editorLayout;
     QFormLayout *infoLayout;
     QScrollArea *area;
     CPUCore *core;
     QTimer *timer;
 
-    QWidget* getPolicyValueWidget(const CPUPolicy &policy);
+    QWidget* getInfoListPolicyValueWidget(const CPUPolicy &policy);
     QString processPolicyValue(const CPUPolicy &policy);
-    void updatePolicyValue(const CPUPolicy &policy);
+    void updateInfoListPolicyValue(const CPUPolicy &policy);
+
+    QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
+
 
 signals:
 

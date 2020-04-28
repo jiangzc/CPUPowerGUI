@@ -6,7 +6,12 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPen>
+#include <QSlider>
+#include <QComboBox>
 #include <QBrush>
+#include <QLineEdit>
+#include <QFormLayout>
+#include <QGridLayout>
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 
@@ -63,7 +68,7 @@ QString DisplayCorePage::processPolicyValue(const CPUPolicy &policy)
     return res;
 }
 
-void DisplayCorePage::updatePolicyValue(const CPUPolicy &policy)
+void DisplayCorePage::updateInfoListPolicyValue(const CPUPolicy &policy)
 {
     for (const auto &item : infoList->children())
     {
@@ -76,7 +81,7 @@ void DisplayCorePage::updatePolicyValue(const CPUPolicy &policy)
     }
 }
 
-QWidget* DisplayCorePage::getPolicyValueWidget(const CPUPolicy &policy)
+QWidget* DisplayCorePage::getInfoListPolicyValueWidget(const CPUPolicy &policy)
 {
     QLabel *label = new QLabel;
     label->setObjectName(policy.name);
@@ -87,6 +92,41 @@ QWidget* DisplayCorePage::getPolicyValueWidget(const CPUPolicy &policy)
     label->setIndent(50);
     return label;
 }
+
+QWidget* DisplayCorePage::getEdiorPolicyValueWidget(const CPUPolicy &policy)
+{
+    QWidget *ret = nullptr;
+    if (policy.name == KnownCPUPolicy::scaling_governor)
+    {
+        QComboBox *comboBox = new QComboBox;
+        auto governors = core->findPolicyByName(KnownCPUPolicy::scaling_available_governors).value.split(" ", QString::SplitBehavior::SkipEmptyParts);
+        for (int i = 0; i < governors.count(); i++)
+        {
+            comboBox->addItem(governors[i]);
+            if (policy.value == governors[i])
+                comboBox->setCurrentIndex(i);
+        }
+        ret = comboBox;
+    }
+    else if (policy.name == KnownCPUPolicy::scaling_max_freq)
+    {
+        QSlider *slider = new QSlider(Qt::Horizontal);
+        return slider;
+    }
+    else if (policy.name == KnownCPUPolicy::scaling_min_freq)
+    {
+        QSlider *slider = new QSlider(Qt::Horizontal);
+        return slider;
+    }
+    else
+    {
+        QLineEdit *lineEdit = new QLineEdit;
+        lineEdit->setText(policy.value);
+        ret = lineEdit;
+    }
+    return ret;
+}
+
 
 DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(parent)
 {
@@ -105,7 +145,7 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     infoLayout = new QFormLayout(infoList);
     for (const auto &item : core->policies)
     {
-        infoLayout->addRow(item.name, getPolicyValueWidget(item));
+        infoLayout->addRow(item.name, getInfoListPolicyValueWidget(item));
     }
     infoLayout->setRowWrapPolicy(QFormLayout::RowWrapPolicy::WrapAllRows);
     infoList->setLayout(infoLayout);
@@ -119,18 +159,41 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     area->setPalette(palette);
     area->setWidget(infoList);
     area->resize(400,500);
-    area->setGeometry(100, 50,380,500);
+    area->setGeometry(50, 50,380,500);
     area->installEventFilter(this);
     area->setFrameStyle(QFrame::NoFrame);
 
+    // 编辑器控件
+    editor = new QWidget(this);
+    palette = infoList->palette();
+    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
+    editor->setAutoFillBackground(true);
+    editor->setPalette(palette);
+    editor->setContentsMargins(5,5,5,5);
 
+    // 控件内布局
+    editorLayout = new QGridLayout(editor);
+    for (const auto &item : core->policies)
+    {
+        if (item.isWriteable)
+        {
+            QWidget *widget = getEdiorPolicyValueWidget(item);
+            if (widget != nullptr)
+                editorLayout->addWidget(widget);
+        }
 
+    }
+    editor->setLayout(editorLayout);
+    editor->move(500, 50);
+    editor->adjustSize();
+
+    // 每秒刷新
     timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]{
         core->update();
         for (const auto &policy : core->policies)
         {
-            this->updatePolicyValue(policy);
+            this->updateInfoListPolicyValue(policy);
         }
     });
     timer->start(1000);
