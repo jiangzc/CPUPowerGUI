@@ -10,13 +10,7 @@
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 
-QString DisplayCorePage::scrollbarQss;
 
-void DisplayCorePage::paintEvent(QPaintEvent *)
-{
-    QPainter painter(this);
-    painter.drawPixmap(0, 0, background);
-}
 
 bool DisplayCorePage::eventFilter(QObject *obj, QEvent *event)
  {
@@ -37,12 +31,34 @@ bool DisplayCorePage::eventFilter(QObject *obj, QEvent *event)
 
 QString DisplayCorePage::processPolicyValue(const CPUPolicy &policy)
 {
+    static QStringList freqField = {
+        KnownCPUPolicy::bios_limit,
+        KnownCPUPolicy::cpuinfo_cur_freq,
+        KnownCPUPolicy::cpuinfo_min_freq,
+        KnownCPUPolicy::cpuinfo_max_freq,
+        KnownCPUPolicy::scaling_cur_freq,
+        KnownCPUPolicy::scaling_min_freq,
+        KnownCPUPolicy::scaling_max_freq,
+    };
+
     QString res = policy.value;
-    if (policy.name.endsWith("_freq"))
+    if (freqField.contains(policy.name))
+    {
         res = QString("%0 MHz").arg(res.toInt() / 1000);
-    else if(policy.name == "energy_performance_available_preferences" || policy.name == "scaling_available_governors")
+    }
+    else if(policy.name == "energy_performance_available_preferences" || policy.name == KnownCPUPolicy::scaling_available_governors)
     {
         res.replace(" ", "\n");
+    }
+    else if (policy.name == KnownCPUPolicy::scaling_available_frequencies)
+    {
+        auto freqList = res.split(" ", QString::SplitBehavior::SkipEmptyParts);
+        res.clear();
+        for (const auto &item : freqList)
+        {
+            res.append(item + "\n");
+        }
+        res.remove(res.count() - 1, 1);
     }
     return res;
 }
@@ -72,20 +88,10 @@ QWidget* DisplayCorePage::getPolicyValueWidget(const CPUPolicy &policy)
     return label;
 }
 
-DisplayCorePage::DisplayCorePage(QWidget *parent) : QWidget(parent)
+DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(parent)
 {
-    background.load(":/res/pic/cpu_blue.jpg");
 
-    core = &cpuInfo.cores[0];
-    // 读取QSS
-    if (scrollbarQss.isEmpty())
-    {
-        QFile qssFile(":/res/src/scrollbar.qss");
-        if (qssFile.open(QIODevice::ReadOnly))
-        {
-            scrollbarQss = qssFile.readAll();
-        }
-    }
+    this->core = &_core;
 
     // 展示CPU频率信息控件
     infoList = new QWidget();
@@ -111,11 +117,9 @@ DisplayCorePage::DisplayCorePage(QWidget *parent) : QWidget(parent)
     palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
     area->setAutoFillBackground(true);
     area->setPalette(palette);
-    area->verticalScrollBar()->setStyleSheet(scrollbarQss);
-    area->horizontalScrollBar()->setStyleSheet(scrollbarQss);
     area->setWidget(infoList);
     area->resize(400,500);
-    area->setGeometry(100, 50,350,600);
+    area->setGeometry(100, 50,380,500);
     area->installEventFilter(this);
     area->setFrameStyle(QFrame::NoFrame);
 

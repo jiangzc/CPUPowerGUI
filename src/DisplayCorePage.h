@@ -13,7 +13,7 @@ class DisplayCorePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DisplayCorePage(QWidget *parent = nullptr);
+    explicit DisplayCorePage(CPUCore& core, QWidget *parent = nullptr);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -24,12 +24,11 @@ private:
     QScrollArea *area;
     CPUCore *core;
     QTimer *timer;
-    QPixmap background;
-    static QString scrollbarQss;
+
     QWidget* getPolicyValueWidget(const CPUPolicy &policy);
     QString processPolicyValue(const CPUPolicy &policy);
     void updatePolicyValue(const CPUPolicy &policy);
-    void paintEvent(QPaintEvent *) override;
+
 signals:
 
 public slots:
