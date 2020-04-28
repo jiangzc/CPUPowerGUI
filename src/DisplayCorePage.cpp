@@ -10,6 +10,7 @@
 #include <QComboBox>
 #include <QBrush>
 #include <QLineEdit>
+#include <QListView>
 #include <QFormLayout>
 #include <QGridLayout>
 #include "DisplayCorePage.h"
@@ -99,6 +100,7 @@ QWidget* DisplayCorePage::getEdiorPolicyValueWidget(const CPUPolicy &policy)
     if (policy.name == KnownCPUPolicy::scaling_governor)
     {
         QComboBox *comboBox = new QComboBox;
+        comboBox->setView(new QListView());
         auto governors = core->findPolicyByName(KnownCPUPolicy::scaling_available_governors).value.split(" ", QString::SplitBehavior::SkipEmptyParts);
         for (int i = 0; i < governors.count(); i++)
         {

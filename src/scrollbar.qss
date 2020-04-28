@@ -82,3 +82,63 @@ subcontrol-position:right;
 margin-right:10px;
 border-radius:4px;
 }
+
+QSlider::horizontal{min-height:16px;}QSlider::groove:horizontal{background:#E8EDF2;height:8px;border-radius:4px;}QSlider::add-page:horizontal{background:#E8EDF2;height:8px;border-radius:4px;}QSlider::sub-page:horizontal{background:#1ABC9C;height:8px;border-radius:4px;}QSlider::handle:horizontal{width:13px;margin-top:-3px;margin-bottom:-3px;border-radius:6px;background:qradialgradient(spread:pad,cx:0.5,cy:0.5,radius:0.5,fx:0.5,fy:0.5,stop:0.6 #FFFFFF,stop:0.8 #1ABC9C);}QSlider::vertical{min-width:16px;}QSlider::groove:vertical{background:#E8EDF2;width:8px;border-radius:4px;}QSlider::add-page:vertical{background:#1ABC9C;width:8px;border-radius:4px;}QSlider::sub-page:vertical{background:#E8EDF2;width:8px;border-radius:4px;}QSlider::handle:vertical{height:14px;margin-left:-3px;margin-right:-3px;border-radius:6px;background:qradialgradient(spread:pad,cx:0.5,cy:0.5,radius:0.5,fx:0.5,fy:0.5,stop:0.6 #FFFFFF,stop:0.8 #1ABC9C);}
+
+QLineEdit{border-style:none;padding:3px;border-radius:5px;border:2px solid #DCE4EC;}
+QLineEdit:focus{border:2px solid #1ABC9C; selection-background-color:#1ABC9C}
+
+QComboBox {
+    combobox-popup: 0;
+
+    color: #000000;
+    border-style:none;
+    border-radius:5px;
+    border:2px solid #DCE4EC;
+    background-color: #FFFFFF;
+}
+
+QComboBox:focus {
+
+    color: #000000;
+    border-radius:5px;
+    border:2px solid #1ABC9C;
+    background-color: #FFFFFF;
+}
+
+
+QComboBox::drop-down {
+
+    width: 25px;
+ 
+    border-left-width: 1px;
+    border-left-color: #DCE4EC;
+    border-left-style: solid; 
+    border-top-right-radius: 5px; 
+    border-bottom-right-radius: 5px;
+
+}
+QComboBox QAbstractItemView::item {
+    height: 25px;
+}
+
+QListView {
+    border:2px solid #DCE4EC;
+    border-bottom-left-radius: 5px; 
+    border-bottom-right-radius: 5px;
+}
+
+QListView::item {
+    background: white;
+    color: black;
+}
+ 
+QListView::item:hover {
+    background: #1ABC9C;
+    color: white;
+}
+
+QListView::item:selected {
+    background: #1ABC9C;
+    color: white;
+}

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     a.setPalette( QPalette(QColor(247, 247, 247) ));
 
     CPUInfo cpuInfo;
-    DisplayCorePage w(cpuInfo.cores[0]);
+    DisplayCorePage w(cpuInfo.cores[1]);
 
     w.show();
     return a.exec();
