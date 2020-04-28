@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/res">
         <file>pic/cpu_blue.jpg</file>
+        <file>src/scrollbar.qss</file>
     </qresource>
 </RCC>

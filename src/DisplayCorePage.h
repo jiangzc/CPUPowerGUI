@@ -25,6 +25,7 @@ private:
     CPUCore *core;
     QTimer *timer;
     QPixmap background;
+    static QString scrollbarQss;
     QWidget* getPolicyValueWidget(const CPUPolicy &policy);
     QString processPolicyValue(const CPUPolicy &policy);
     void updatePolicyValue(const CPUPolicy &policy);
