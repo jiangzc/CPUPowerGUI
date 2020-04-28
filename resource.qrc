@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>pic/cpu_blue.jpg</file>
+    </qresource>
+</RCC>
