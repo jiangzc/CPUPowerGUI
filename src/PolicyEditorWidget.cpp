@@ -63,7 +63,7 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
 
     editorLayout->setRowMinimumHeight(row, 40);
     editorLayout->addLayout(firstLine, row, 0);
-    editorLayout->addWidget(popLabel, row, 1, Qt::AlignLeft);
+    editorLayout->addWidget(popLabel, row, 1, 1, 2, Qt::AlignLeft);
 
     row++;
     for (const auto &policy : core->policies)
