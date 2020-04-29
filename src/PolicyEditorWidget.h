@@ -26,6 +26,7 @@ private:
     QGridLayout *editorLayout;
     QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
     virtual void paintEvent(QPaintEvent *e) override;
+    bool applyChanges();
 
 signals:
 

@@ -58,10 +58,11 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     font.setPixelSize(20);
     popLabel->setFont(font);
     popLabel->setText("");
+    popLabel->setMaximumWidth(200);
 
     editorLayout->setRowMinimumHeight(row, 40);
     editorLayout->addLayout(firstLine, row, 0);
-    editorLayout->addWidget(popLabel, row, 1, Qt::AlignCenter);
+    editorLayout->addWidget(popLabel, row, 1, Qt::AlignLeft);
 
     row++;
     for (const auto &policy : core->policies)
@@ -90,9 +91,10 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     applyButton->setText("Apply");
     applyButton->setFixedWidth(120);
     applyButton->setFixedHeight(40);
+    connect(applyButton, &QPushButton::clicked, this, &PolicyEditorWidget::applyChanges);
     editorLayout->addWidget(applyButton, row+ 1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
     this->setLayout(editorLayout);
-
+    qDebug() << this->children();
 }
 
 bool PolicyEditorWidget::eventFilter(QObject *obj, QEvent *event)
@@ -146,8 +148,11 @@ QWidget *PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
     else if (policy.name == KnownCPUPolicy::scaling_max_freq || policy.name == KnownCPUPolicy::scaling_min_freq)
     {
         QSlider *slider = new QSlider(Qt::Horizontal);
+        slider->setMinimum(core->findPolicyByName(KnownCPUPolicy::cpuinfo_min_freq).value.toInt() / 1000);
+        slider->setMaximum(core->findPolicyByName(KnownCPUPolicy::cpuinfo_max_freq).value.toInt() / 1000);
+        qDebug() << slider->minimum();
         slider->installEventFilter(this);
-        return slider;
+        ret = slider;
     }
     else
     {
@@ -156,6 +161,7 @@ QWidget *PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
         ret = lineEdit;
         ret->setMaximumWidth(200);
     }
+    ret->setObjectName(policy.name);
     return ret;
 
 }
@@ -168,4 +174,38 @@ void PolicyEditorWidget::paintEvent(QPaintEvent *)
     painter.setPen(Qt::NoPen);
     painter.setBrush(brush);
     painter.drawRoundedRect(this->rect(), 12, 12);
+}
+
+bool PolicyEditorWidget::applyChanges()
+{
+    QString msg;
+    for (const auto &item : this->children())
+    {
+        auto policy = core->findPolicyByName(item->objectName());
+        QString widgetValue;
+
+        if (dynamic_cast<QLineEdit*>(item) != nullptr)
+        {
+            widgetValue = dynamic_cast<QLineEdit*>(item)->text();
+        }
+        if (dynamic_cast<QSlider*>(item) != nullptr)
+        {
+            widgetValue = QString::number(dynamic_cast<QSlider*>(item)->value() * 1000);
+            qDebug() << widgetValue;
+        }
+        if (dynamic_cast<QComboBox*>(item) != nullptr)
+        {
+            widgetValue = dynamic_cast<QComboBox*>(item)->currentText();
+        }
+        if ( policy.value != widgetValue)
+        {
+            qDebug () << policy.name <<  widgetValue;
+            if (core->setPolicy(policy.name, widgetValue))
+            {
+                msg += QString("set: %0; ").arg(policy.name);
+            }
+        }
+    }
+    popMessage(true, msg);
+    return true;
 }
