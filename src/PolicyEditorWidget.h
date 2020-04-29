@@ -2,6 +2,7 @@
 #define POLICYEDITORWIDGET_H
 
 #include <QWidget>
+#include <QPair>
 
 class CPUPolicy;
 class CPUCore;
@@ -24,7 +25,7 @@ private:
     QLabel *popLabel;
     void popMessage(bool ok, QString msg="");
     QGridLayout *editorLayout;
-    QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
+    QPair<QWidget*, QWidget*>  getEdiorPolicyValueWidget(const CPUPolicy &policy);
     virtual void paintEvent(QPaintEvent *e) override;
     bool applyChanges();
 

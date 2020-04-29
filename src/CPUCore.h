@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QDir>
-#include <QVector>
+#include <QMap>
 
 class CPUPolicy;
 
@@ -17,8 +17,7 @@ public:
     bool isEnabled();
     bool setEnabled(bool enable);
 
-    QVector<CPUPolicy> policies;
-    CPUPolicy findPolicyByName(QString name);
+    QMap<QString, CPUPolicy> policies;
     bool setPolicy(QString name, QVariant value);
 
     bool update();

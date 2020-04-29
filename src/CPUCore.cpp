@@ -41,15 +41,6 @@ bool CPUCore::setEnabled(bool enable)
     return ret;
 }
 
-CPUPolicy CPUCore::findPolicyByName(QString name)
-{
-    for (auto &policy : policies)
-    {
-        if (name == policy.name)
-            return policy;
-    }
-    return CPUPolicy();
-}
 
 bool CPUCore::setPolicy(QString name, QVariant value)
 {
@@ -101,7 +92,7 @@ bool CPUCore::update()
         }
         policy.isReadable = info.permission(QFileDevice::ReadOwner);
         policy.isWriteable = info.permission(QFileDevice::WriteOwner);
-        policies.append(policy);
+        policies.insert(policy.name, policy);
     }
 
     return ret;

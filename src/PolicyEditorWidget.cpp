@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QMouseEvent>
 #include <QComboBox>
+#include <QSpinBox>
 #include <QListView>
 #include "PolicyEditorWidget.h"
 #include "CPUInfo.h"
@@ -71,19 +72,25 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
         {
             QLabel *label = new QLabel;
             label->setMaximumWidth(200);
-            label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
             label->setText(policy.name);
-            QWidget *widget = getEdiorPolicyValueWidget(policy);
-            if (widget != nullptr)
+            editorLayout->setRowMinimumHeight(row, 40);
+            auto widgets = getEdiorPolicyValueWidget(policy);
+            QWidget *widget1 = widgets.first;
+            QWidget *widget2 = widgets.second;
+
+            if (widget1 != nullptr)
             {
-                editorLayout->setRowMinimumHeight(row, 40);
-                widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                widget->setFixedHeight(40);
-                editorLayout->addWidget(label, row, 0);
-                editorLayout->addWidget(widget, row, 1);
-                editorLayout->setRowMinimumHeight(row, 20);
-                row++;
+                widget1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                editorLayout->addWidget(label, row, 0, Qt::AlignVCenter);
+                editorLayout->addWidget(widget1, row, 1, Qt::AlignVCenter);
             }
+            if (widget2 != nullptr)
+            {
+                widget2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                editorLayout->addWidget(widget2, row, 2, Qt::AlignVCenter);
+            }
+            row++;
         }
     }
 
@@ -92,7 +99,7 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     applyButton->setFixedWidth(120);
     applyButton->setFixedHeight(40);
     connect(applyButton, &QPushButton::clicked, this, &PolicyEditorWidget::applyChanges);
-    editorLayout->addWidget(applyButton, row+ 1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
+    editorLayout->addWidget(applyButton, row+1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
     this->setLayout(editorLayout);
     qDebug() << this->children();
 }
@@ -112,7 +119,7 @@ bool PolicyEditorWidget::eventFilter(QObject *obj, QEvent *event)
 
 QSize PolicyEditorWidget::sizeHint() const
 {
-    return QSize(500, 400);
+    return QSize(500, 500);
 }
 
 void PolicyEditorWidget::popMessage(bool ok, QString msg)
@@ -128,41 +135,70 @@ void PolicyEditorWidget::popMessage(bool ok, QString msg)
     popLabel->setText(msg);
 }
 
-QWidget *PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
+QPair<QWidget*, QWidget*> PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
 {
-    QWidget *ret = nullptr;
+    QWidget *ret1 = nullptr;
+    QWidget *ret2 = nullptr;
+    // 下拉框
     if (policy.name == KnownCPUPolicy::scaling_governor)
     {
         QComboBox *comboBox = new QComboBox;
         comboBox->setView(new QListView());
-        auto governors = core->findPolicyByName(KnownCPUPolicy::scaling_available_governors).value.split(" ", QString::SplitBehavior::SkipEmptyParts);
+        auto governors = core->policies.value(KnownCPUPolicy::scaling_available_governors).value.split(" ", QString::SplitBehavior::SkipEmptyParts);
         for (int i = 0; i < governors.count(); i++)
         {
             comboBox->addItem(governors[i]);
             if (policy.value == governors[i])
                 comboBox->setCurrentIndex(i);
         }
-        ret = comboBox;
-        ret->setMaximumWidth(200);
+        comboBox->setFixedHeight(40);
+        ret1 = comboBox;
+        ret1->setMaximumWidth(200);
     }
+    // 滑条和数字框
     else if (policy.name == KnownCPUPolicy::scaling_max_freq || policy.name == KnownCPUPolicy::scaling_min_freq)
     {
         QSlider *slider = new QSlider(Qt::Horizontal);
-        slider->setMinimum(core->findPolicyByName(KnownCPUPolicy::cpuinfo_min_freq).value.toInt() / 1000);
-        slider->setMaximum(core->findPolicyByName(KnownCPUPolicy::cpuinfo_max_freq).value.toInt() / 1000);
-        qDebug() << slider->minimum();
+        int minValue = core->policies.value(KnownCPUPolicy::cpuinfo_min_freq).value.toInt() / 1000;
+        int maxValue = core->policies.value(KnownCPUPolicy::cpuinfo_max_freq).value.toInt() / 1000;
+        int curValue = 0;
+        if (policy.name == KnownCPUPolicy::scaling_max_freq)
+        {
+            curValue = core->policies[KnownCPUPolicy::scaling_max_freq].value.toInt() / 1000;
+        }
+        else if (policy.name == KnownCPUPolicy::scaling_min_freq)
+        {
+            curValue = core->policies[KnownCPUPolicy::scaling_min_freq].value.toInt() / 1000;
+        }
+
+        slider->setMinimum(minValue);
+        slider->setMaximum(maxValue);
         slider->installEventFilter(this);
-        ret = slider;
+        slider->setFixedHeight(40);
+        ret1 = slider;
+
+        QSpinBox *spinBox = new QSpinBox;
+        spinBox->setMinimum(minValue);
+        spinBox->setMaximum(maxValue);
+        spinBox->setFixedHeight(30);
+        ret2 = spinBox;
+
+        connect(slider, &QSlider::valueChanged, spinBox, &QSpinBox::setValue);
+        connect(spinBox, SIGNAL(valueChanged(int)), slider, SLOT(setValue(int)));
+
+        slider->setValue(curValue);
     }
+    // 文本框
     else
     {
         QLineEdit *lineEdit = new QLineEdit;
         lineEdit->setText(policy.value);
-        ret = lineEdit;
-        ret->setMaximumWidth(200);
+        ret1 = lineEdit;
+        ret1->setMaximumWidth(200);
+        ret1->setFixedHeight(40);
     }
-    ret->setObjectName(policy.name);
-    return ret;
+    ret1->setObjectName(policy.name);
+    return qMakePair(ret1, ret2) ;
 
 }
 
@@ -181,7 +217,7 @@ bool PolicyEditorWidget::applyChanges()
     QString msg;
     for (const auto &item : this->children())
     {
-        auto policy = core->findPolicyByName(item->objectName());
+        auto policy = core->policies.value(item->objectName());
         QString widgetValue;
 
         if (dynamic_cast<QLineEdit*>(item) != nullptr)
