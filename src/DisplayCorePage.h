@@ -5,9 +5,8 @@
 
 class CPUPolicy;
 class CPUCore;
-class QScrollArea;
-class QGridLayout;
-class QFormLayout;
+class PolicyEditorWidget;
+class PolicyDisplayWidget;
 
 class DisplayCorePage : public QWidget
 {
@@ -16,22 +15,12 @@ public:
     explicit DisplayCorePage(CPUCore& _core, QWidget *parent = nullptr);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
+
 
 private:
-    QWidget *infoList;
-    QWidget *editor;
-    QGridLayout *editorLayout;
-    QFormLayout *infoLayout;
-    QScrollArea *area;
     CPUCore *core;
-    QTimer *timer;
-
-    QWidget* getInfoListPolicyValueWidget(const CPUPolicy &policy);
-    QString processPolicyValue(const CPUPolicy &policy);
-    void updateInfoListPolicyValue(const CPUPolicy &policy);
-
-    QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
+    PolicyEditorWidget *editor;
+    PolicyDisplayWidget *monitor;
 
 
 signals:

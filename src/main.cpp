@@ -35,10 +35,9 @@ int main(int argc, char *argv[])
 
     CPUInfo cpuInfo;
     MainWindow w;
-//    DisplayCorePage w2(cpuInfo.cores[1], &w);
-//    w.resize(1100,600);
-//    w.show();
-    PolicyEditorWidget w2(cpuInfo.cores[1], &w);
+    DisplayCorePage w2(cpuInfo.cores[1], &w);
+    w.resize(1100,600);
     w.show();
+
     return a.exec();
 }
