@@ -101,7 +101,7 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     connect(applyButton, &QPushButton::clicked, this, &PolicyEditorWidget::applyChanges);
     editorLayout->addWidget(applyButton, row+1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
     this->setLayout(editorLayout);
-    qDebug() << this->children();
+
 }
 
 bool PolicyEditorWidget::eventFilter(QObject *obj, QEvent *event)
@@ -181,6 +181,9 @@ QPair<QWidget*, QWidget*> PolicyEditorWidget::getEdiorPolicyValueWidget(const CP
         spinBox->setMinimum(minValue);
         spinBox->setMaximum(maxValue);
         spinBox->setFixedHeight(30);
+        QPalette palette = spinBox->palette();
+        palette.setColor(QPalette::ColorRole::Highlight, QColor("#1ABC9C"));
+        spinBox->setPalette(palette);
         ret2 = spinBox;
 
         connect(slider, &QSlider::valueChanged, spinBox, &QSpinBox::setValue);
