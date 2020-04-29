@@ -7,6 +7,8 @@
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 #include "MainWindow.h"
+#include "PolicyDisplayWidget.h"
+#include "PolicyEditorWidget.h"
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -33,8 +35,10 @@ int main(int argc, char *argv[])
 
     CPUInfo cpuInfo;
     MainWindow w;
-    DisplayCorePage w2(cpuInfo.cores[1], &w);
-    w.resize(1100,600);
+//    DisplayCorePage w2(cpuInfo.cores[1], &w);
+//    w.resize(1100,600);
+//    w.show();
+    PolicyEditorWidget w2(cpuInfo.cores[1], &w);
     w.show();
     return a.exec();
 }

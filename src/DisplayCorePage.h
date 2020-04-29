@@ -13,7 +13,7 @@ class DisplayCorePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DisplayCorePage(CPUCore& core, QWidget *parent = nullptr);
+    explicit DisplayCorePage(CPUCore& _core, QWidget *parent = nullptr);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;

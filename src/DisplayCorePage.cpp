@@ -187,53 +187,7 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     area->setFrameStyle(QFrame::NoFrame);
 
     // 编辑器控件
-    editor = new QWidget(this);
-    palette = editor->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    editor->setAutoFillBackground(true);
-    editor->setPalette(palette);
-    editor->setContentsMargins(5,5,5,5);
-    editor->installEventFilter(this);
 
-    // 控件内布局
-    editorLayout = new QGridLayout;
-
-    editorLayout->setSpacing(20);
-
-    int row = 0;
-    for (const auto &policy : core->policies)
-    {
-        if (policy.isWriteable)
-        {
-            QLabel *label = new QLabel;
-            label->setMaximumWidth(200);
-            label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-            label->setText(policy.name);
-            QWidget *widget = getEdiorPolicyValueWidget(policy);
-            if (widget != nullptr)
-            {
-                editorLayout->setRowMinimumHeight(row, 40);
-                widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                widget->setFixedHeight(40);
-                editorLayout->addWidget(label, row, 0);
-                editorLayout->addWidget(widget, row, 1);
-                editorLayout->setRowMinimumHeight(row, 20);
-                row++;
-            }
-        }
-    }
-
-    QPushButton *applyButton = new QPushButton;
-    applyButton->setText("Apply");
-    //editorLayout.set
-    // applyButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    applyButton->setFixedWidth(120);
-    applyButton->setFixedHeight(40);
-    editorLayout->addWidget(applyButton, row+ 1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
-    editor->setLayout(editorLayout);
-    editorLayout->update();
-    editor->move(500, 50);
-    editor->resize(500,400);
 
     // 每秒刷新
     timer = new QTimer();

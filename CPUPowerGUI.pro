@@ -30,6 +30,8 @@ SOURCES += \
         src/CPUPolicy.cpp \
         src/DisplayCorePage.cpp \
         src/MainWindow.cpp \
+        src/PolicyDisplayWidget.cpp \
+        src/PolicyEditorWidget.cpp \
         src/main.cpp \
         src/DisplayUI.cpp
 
@@ -39,7 +41,9 @@ HEADERS += \
         src/CPUPolicy.h \
         src/DisplayCorePage.h \
         src/DisplayUI.h \
-        src/MainWindow.h
+        src/MainWindow.h \
+        src/PolicyDisplayWidget.h \
+        src/PolicyEditorWidget.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
