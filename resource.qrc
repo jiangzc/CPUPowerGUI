@@ -2,5 +2,11 @@
     <qresource prefix="/res">
         <file>pic/cpu_blue.jpg</file>
         <file>src/scrollbar.qss</file>
+        <file>pic/btncheckoff1.png</file>
+        <file>pic/btncheckoff2.png</file>
+        <file>pic/btncheckoff3.png</file>
+        <file>pic/btncheckon1.png</file>
+        <file>pic/btncheckon2.png</file>
+        <file>pic/btncheckon3.png</file>
     </qresource>
 </RCC>

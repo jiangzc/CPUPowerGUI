@@ -2,6 +2,7 @@
 #include <QColor>
 #include <QFont>
 #include <QFile>
+#include <QDebug>
 #include <QMessageBox>
 #include "DisplayUI.h"
 #include "DisplayCorePage.h"

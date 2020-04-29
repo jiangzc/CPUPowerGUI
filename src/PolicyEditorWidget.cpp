@@ -7,11 +7,13 @@
 #include <QBrush>
 #include <QFormLayout>
 #include <QPushButton>
+#include <QHBoxLayout>
 #include <QMouseEvent>
 #include <QComboBox>
 #include <QListView>
 #include "PolicyEditorWidget.h"
 #include "CPUInfo.h"
+#include "imageswitch.h"
 
 PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidget(parent)
 {
@@ -21,14 +23,33 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     this->setAutoFillBackground(true);
     this->setPalette(palette);
     this->setContentsMargins(5,5,5,5);
-    // this->installEventFilter(this);
 
     // 控件内布局
     editorLayout = new QGridLayout;
 
     editorLayout->setSpacing(20);
 
+    // 第一行： CPU编号 开启关闭按钮  消息标签
     int row = 0;
+    QHBoxLayout *firstLine = new QHBoxLayout;
+
+    QLabel *cpuID = new QLabel;
+    cpuID->setText(QString("CPU %0").arg(core->core_id()));
+    QFont font = cpuID->font();
+    font.setPixelSize(28);
+    font.setBold(true);
+    cpuID->setFont(font);
+
+    ImageSwitch *cpuSwitch = new ImageSwitch();
+    cpuSwitch->setButtonStyle(ImageSwitch::ButtonStyle_3);
+    cpuSwitch->setChecked(core->isEnabled());
+    cpuSwitch->setFixedHeight(30);
+
+    firstLine->addWidget(cpuID, Qt::AlignBaseline);
+    firstLine->addWidget(cpuSwitch, Qt::AlignBaseline);
+    editorLayout->setRowMinimumHeight(row, 40);
+
+    editorLayout->addLayout(firstLine, row++, 0);
     for (const auto &policy : core->policies)
     {
         if (policy.isWriteable)
@@ -116,7 +137,7 @@ void PolicyEditorWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QBrush brush(QColor(222,222,222,200));
+    QBrush brush(QColor(222,222,222,222));
     painter.setPen(Qt::NoPen);
     painter.setBrush(brush);
     painter.drawRoundedRect(this->rect(), 12, 12);

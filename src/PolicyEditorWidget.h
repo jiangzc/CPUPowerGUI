@@ -6,6 +6,7 @@
 class CPUPolicy;
 class CPUCore;
 class QGridLayout;
+class QLabel;
 
 
 class PolicyEditorWidget : public QWidget
@@ -20,6 +21,8 @@ protected:
 
 private:
     CPUCore *core;
+    QLabel *popLabel;
+    void popMessage(QString msg, bool ok);
     QGridLayout *editorLayout;
     QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
     virtual void paintEvent(QPaintEvent *e) override;

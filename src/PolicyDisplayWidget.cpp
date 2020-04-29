@@ -124,7 +124,7 @@ bool PolicyDisplayWidget::eventFilter(QObject *obj, QEvent *event)
     if (obj == this && event->type() == QEvent::Paint)
     {
         painter.begin(this);
-        QBrush brush(QColor(222,222,222,200));
+        QBrush brush(QColor(222,222,222,222));
         painter.setPen(Qt::NoPen);
         painter.setBrush(brush);
         painter.setRenderHint(QPainter::Antialiasing);

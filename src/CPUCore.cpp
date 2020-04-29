@@ -75,14 +75,14 @@ bool CPUCore::update()
     ret = file.exists() && file.open(QIODevice::ReadOnly) && ret;
     if (ret)
     {
-        m_core_id = file.readAll().toShort();
+        m_core_id = file.readAll().trimmed().toShort();
         file.close();
     }
     // is online ?
     file.setFileName(m_coreDir.absoluteFilePath("online"));
     if (file.exists() && file.open(QIODevice::ReadOnly))
     {
-        isOnline = file.readAll().toInt();
+        isOnline = file.readAll().trimmed().toInt();
         file.close();
     }
     // get policies
