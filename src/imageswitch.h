@@ -55,6 +55,10 @@ public:
     QSize sizeHint()                const;
     QSize minimumSizeHint()         const;
 
+
+signals:
+    void checked(bool status);
+
 public Q_SLOTS:
     void setChecked(bool isChecked);
     void setButtonStyle(const ImageSwitch::ButtonStyle &buttonStyle);

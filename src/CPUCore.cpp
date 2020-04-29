@@ -8,6 +8,14 @@ CPUCore::CPUCore(const QDir &cpuDir)
     m_coreDir = cpuDir;
     if (cpuDir.exists())
     {
+        // get core id
+        int id_len = 0;
+        QString path = cpuDir.absolutePath();
+        if (path[path.count() - 1].isNumber())
+            id_len++;
+        if (path[path.count() - 2].isNumber())
+            id_len++;
+        m_core_id = path.mid(path.count() - id_len, path.count() - 1).toShort();
         // load policies
         update();
     }
@@ -68,16 +76,8 @@ bool CPUCore::setPolicy(QString name, QVariant value)
 bool CPUCore::update()
 {
     bool ret = true;
-
-    // get core id
     QFile file;
-    file.setFileName(m_coreDir.absoluteFilePath("topology/core_id"));
-    ret = file.exists() && file.open(QIODevice::ReadOnly) && ret;
-    if (ret)
-    {
-        m_core_id = file.readAll().trimmed().toShort();
-        file.close();
-    }
+
     // is online ?
     file.setFileName(m_coreDir.absoluteFilePath("online"));
     if (file.exists() && file.open(QIODevice::ReadOnly))

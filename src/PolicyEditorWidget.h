@@ -22,7 +22,7 @@ protected:
 private:
     CPUCore *core;
     QLabel *popLabel;
-    void popMessage(QString msg, bool ok);
+    void popMessage(bool ok, QString msg="");
     QGridLayout *editorLayout;
     QWidget* getEdiorPolicyValueWidget(const CPUPolicy &policy);
     virtual void paintEvent(QPaintEvent *e) override;

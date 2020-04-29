@@ -44,12 +44,26 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     cpuSwitch->setButtonStyle(ImageSwitch::ButtonStyle_3);
     cpuSwitch->setChecked(core->isEnabled());
     cpuSwitch->setFixedHeight(30);
-
+    connect(cpuSwitch, &ImageSwitch::checked, this, [=](bool checked){
+        bool ret = core->setEnabled(checked);
+        this->popMessage(ret);
+        if (!ret)
+            cpuSwitch->setChecked(!checked);
+    });
     firstLine->addWidget(cpuID, Qt::AlignBaseline);
     firstLine->addWidget(cpuSwitch, Qt::AlignBaseline);
-    editorLayout->setRowMinimumHeight(row, 40);
 
-    editorLayout->addLayout(firstLine, row++, 0);
+    popLabel = new QLabel;
+    font = popLabel->font();
+    font.setPixelSize(20);
+    popLabel->setFont(font);
+    popLabel->setText("");
+
+    editorLayout->setRowMinimumHeight(row, 40);
+    editorLayout->addLayout(firstLine, row, 0);
+    editorLayout->addWidget(popLabel, row, 1, Qt::AlignCenter);
+
+    row++;
     for (const auto &policy : core->policies)
     {
         if (policy.isWriteable)
@@ -97,6 +111,19 @@ bool PolicyEditorWidget::eventFilter(QObject *obj, QEvent *event)
 QSize PolicyEditorWidget::sizeHint() const
 {
     return QSize(500, 400);
+}
+
+void PolicyEditorWidget::popMessage(bool ok, QString msg)
+{
+    QPalette palette = popLabel->palette();
+    if (ok)
+        palette.setColor(QPalette::ColorRole::WindowText, QColor("#009900"));
+    else
+        palette.setColor(QPalette::ColorRole::WindowText, QColor("#CC0000"));
+    popLabel->setPalette(palette);
+    if (msg.isEmpty())
+        msg = ok ? "yes" : "no";
+    popLabel->setText(msg);
 }
 
 QWidget *PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
