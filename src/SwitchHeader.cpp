@@ -5,8 +5,8 @@
 #include <QMouseEvent>
 #include "SwitchHeader.h"
 
-const int spliterWidth = 4;
-
+const int spliterWidth = 20;
+const int radius = 6;
 SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
@@ -14,6 +14,7 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
     palette.setColor(QPalette::Background, QColor(53, 152, 219));   // 背景颜色
     palette.setColor(QPalette::Highlight, QColor(40, 116, 166));    // 选中颜色
     palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
+    palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
     this->setPalette(palette);
     m_mouse.rx() = m_mouse.ry() = -1;
 }
@@ -91,20 +92,19 @@ void SwitchHeader::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
     painter.setBrush(palette().background());
-    painter.drawRoundedRect(rect(), 6, 6);
+    painter.drawRoundedRect(rect(), radius, radius);
+    // draw hover rect
+    int hoverIndex = pointToIndex(m_mouse);
+    drawIndexRect(painter, hoverIndex, palette().light());
     // draw selected rect
-    painter.setBrush(palette().highlight());
-    if (m_currentIndex > 0 && m_currentIndex < list.count() - 1)
-    {
-        painter.drawRect(indexToRect(m_currentIndex));
-    }
+    drawIndexRect(painter, m_currentIndex, palette().highlight());
     // draw spliter
     painter.setBrush(QColor(0,0,0, 50));
     QRect itemRect;
     for (int i = 0; i < list.count() - 1; i++)
     {
         itemRect = indexToRect(i);
-        painter.drawRect(itemRect.x() + itemRect.width(), 0, spliterWidth, height());
+        painter.drawRect(itemRect.x() + itemRect.width() + 1, 0, spliterWidth-2, height());
     }
 
 }
@@ -139,6 +139,26 @@ QRect SwitchHeader::indexToRect(int index) const
 {
     int rectWidth = (width() + spliterWidth) / list.count();
     return QRect(index * rectWidth, 0, rectWidth - spliterWidth, height());
+}
+
+void SwitchHeader::drawIndexRect(QPainter &painter, int index, QBrush brush) const
+{
+    painter.setBrush(brush);
+    if (index > 0 && index < list.count() - 1)
+    {
+        painter.drawRect(indexToRect(index).adjusted(-1,0,1,0));
+    }
+    if (index == 0)
+    {
+        painter.drawRoundedRect(0, 0, radius * 2, height(), radius, radius);
+        painter.drawRect(QRect(QPoint(radius, 0), QPoint(indexToRect(0).width(), height())));
+    }
+    if (index == count() - 1)
+    {
+        QRect lastRect = indexToRect(count() - 1);
+        painter.drawRoundedRect(width() - radius * 2, 0, radius * 2, height(), radius, radius);
+        painter.drawRect(QRect(lastRect.topLeft(), QSize(lastRect.width() - radius, height())));
+    }
 }
 
 int SwitchHeader::count() const

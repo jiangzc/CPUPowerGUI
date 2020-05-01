@@ -22,7 +22,6 @@ public:
     int count() const;
 
     QSize sizeHint() const override;
-
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *e) override;
@@ -36,6 +35,7 @@ private:
     bool isHover;
     inline int pointToIndex(const QPoint &p) const;
     inline QRect indexToRect(int index) const;
+    inline void drawIndexRect(QPainter &painter, int index, QBrush brush) const;
 
 
 signals:
