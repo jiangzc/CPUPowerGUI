@@ -10,6 +10,7 @@
 #include "MainWindow.h"
 #include "PolicyDisplayWidget.h"
 #include "PolicyEditorWidget.h"
+#include "SwitchHeader.h"
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -35,6 +36,13 @@ int main(int argc, char *argv[])
 
     CPUInfo cpuInfo;
     MainWindow w;
+    SwitchHeader header(&w);
+    header.setGeometry(20,20,300,40);
+    header.append("aa");
+    header.append("aa");
+    header.append("aa");
+    header.append("aa");
+    header.setCurrentIndex(1);
     DisplayCorePage w2(cpuInfo.cores[1], &w);
     w.resize(1100,600);
     w.show();

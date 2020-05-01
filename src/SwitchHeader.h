@@ -11,13 +11,13 @@ class SwitchHeader : public QWidget
     Q_OBJECT
 public:
     explicit SwitchHeader(QWidget *parent = nullptr);
-    void append(QString text);
-    bool insert(int index, QString text);
+    void append(const QString &text);
+    bool insert(int index, const QString &text);
     bool remove(int index);
     int currentIndex() const;
     QString currentText() const;
     QString getText(int index) const;
-    bool setText(int index, QString text);
+    bool setText(int index, const QString &text);
     void setCurrentIndex(int index);
     int count() const;
 
@@ -27,9 +27,16 @@ protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 private:
     QVector<QString> list;
     int m_currentIndex;
+    QPoint m_mouse;
+    bool isHover;
+    inline int pointToIndex(const QPoint &p) const;
+    inline QRect indexToRect(int index) const;
+
 
 signals:
     void indexChanged(int);
