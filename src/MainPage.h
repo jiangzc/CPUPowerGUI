@@ -2,10 +2,13 @@
 #define MAINPAGE_H
 
 #include <QWidget>
+
 class CPUInfo;
 class QLabel;
 class QPixmap;
 class QTimer;
+class SwitchHeader;
+
 class MainPage : public QWidget
 {
     Q_OBJECT
@@ -19,7 +22,9 @@ private:
     CPUInfo &m_cpuInfo;
     QLabel *nameLabel;
     QLabel *overview;
-    QPixmap *cpuLogo;
+    QTimer *timer;
+    QPixmap cpuLogo;
+    SwitchHeader *modeGovern;
     void paintEvent(QPaintEvent *event);
     QSize sizeHint() const;
 

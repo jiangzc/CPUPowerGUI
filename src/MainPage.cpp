@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "MainPage.h"
 #include "CPUInfo.h"
+#include "SwitchHeader.h"
 
 MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuInfo(cpuInfo)
 {
@@ -21,8 +22,22 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     font.setPixelSize(18);
     overview->setFont(font);
     updateOverview();
-    cpuLogo = new QPixmap(":/res/pic/cpulogo.png");
 
+    cpuLogo.load(":/res/pic/cpulogo.png");
+
+    timer = new QTimer(this);
+    timer->setInterval(1000);
+    connect(timer, &QTimer::timeout, this, &MainPage::updateOverview);
+    timer->start();
+
+    modeGovern = new SwitchHeader(this);
+    modeGovern->append("Performance");
+    modeGovern->append("Fast");
+    modeGovern->append("Normal");
+    modeGovern->append("Slow");
+    modeGovern->append("Powersave");
+    modeGovern->move(250, 300);
+    modeGovern->resize(700, 40);
 }
 
 void MainPage::paintEvent(QPaintEvent *)
@@ -35,7 +50,7 @@ void MainPage::paintEvent(QPaintEvent *)
     painter.setBrush(brush);
     painter.drawRoundedRect(this->rect(), 12, 12);
     // CPU Logo
-    painter.drawPixmap(QRect(0, 10, 250, 250), *cpuLogo, cpuLogo->rect());
+    painter.drawPixmap(QRect(0, 10, 250, 250), cpuLogo, cpuLogo.rect());
 }
 
 QSize MainPage::sizeHint() const

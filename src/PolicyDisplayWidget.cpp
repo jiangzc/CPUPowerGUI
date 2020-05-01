@@ -41,7 +41,7 @@ PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScr
     QScrollArea::installEventFilter(this);
 
     // 每秒刷新
-    timer = new QTimer();
+    timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [=]{
         core->update();
         for (const auto &policy : core->policies)
