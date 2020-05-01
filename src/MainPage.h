@@ -8,6 +8,7 @@ class QLabel;
 class QPixmap;
 class QTimer;
 class SwitchHeader;
+class QScrollArea;
 
 class MainPage : public QWidget
 {
@@ -25,8 +26,10 @@ private:
     QTimer *timer;
     QPixmap cpuLogo;
     SwitchHeader *modeGovern;
+    QScrollArea *area;
     void paintEvent(QPaintEvent *event);
     QSize sizeHint() const;
+    virtual bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void updateOverview();

@@ -237,16 +237,19 @@ QMap<QString, QString> PolicyEditorWidget::dumpPolicySettings()
         if (dynamic_cast<QLineEdit*>(item) != nullptr)
         {
             widgetValue = dynamic_cast<QLineEdit*>(item)->text();
+            settings[policy.name] = widgetValue;
         }
         if (dynamic_cast<QSlider*>(item) != nullptr)
         {
             widgetValue = QString::number(dynamic_cast<QSlider*>(item)->value() * 1000);
+            settings[policy.name] = widgetValue;
         }
         if (dynamic_cast<QComboBox*>(item) != nullptr)
         {
             widgetValue = dynamic_cast<QComboBox*>(item)->currentText();
+            settings[policy.name] = widgetValue;
         }
-        settings[policy.name] = widgetValue;
+
     }
     return settings;
 }

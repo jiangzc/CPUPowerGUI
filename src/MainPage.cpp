@@ -3,6 +3,8 @@
 #include <QLabel>
 #include <QRect>
 #include <QTimer>
+#include <QScrollArea>
+#include <QEvent>
 #include "MainPage.h"
 #include "CPUInfo.h"
 #include "SwitchHeader.h"
@@ -18,10 +20,27 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     nameLabel->adjustSize();
 
     overview = new QLabel(this);
-    overview->move(280,100);
+    //overview->move(280,100);
     font.setPixelSize(18);
     overview->setFont(font);
+    QPalette palette = overview->palette();
+    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
+    overview->setAutoFillBackground(true);
+    overview->setPalette(palette);
+    overview->setMargin(20);
     updateOverview();
+    overview->adjustSize();
+
+    area = new QScrollArea(this);
+    palette = area->palette();
+    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
+    area->setPalette(palette);
+    area->setAutoFillBackground(true);
+    area->setFrameStyle(QFrame::NoFrame);
+    area->setWidget(overview);
+    area->move(250, 110);
+    area->setFixedSize(800,200);
+    area->installEventFilter(this);
 
     cpuLogo.load(":/res/pic/cpulogo.png");
 
@@ -36,7 +55,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->append("Normal");
     modeGovern->append("Slow");
     modeGovern->append("Powersave");
-    modeGovern->move(250, 300);
+    modeGovern->move(250, 400);
     modeGovern->resize(700, 40);
 }
 
@@ -56,6 +75,25 @@ void MainPage::paintEvent(QPaintEvent *)
 QSize MainPage::sizeHint() const
 {
     return QSize(1100, 500);
+}
+
+bool MainPage::eventFilter(QObject *obj, QEvent *event)
+{
+    QPainter painter;
+    if (obj == area && event->type() == QEvent::Paint)
+    {
+        painter.begin(area);
+        QBrush brush(QColor(222,222,222,0));
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(brush);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.drawRoundedRect(area->rect(), 12, 12);
+        return true;
+    }
+    else
+    {
+        return QWidget::eventFilter(obj, event);
+    }
 }
 
 void MainPage::updateOverview()
