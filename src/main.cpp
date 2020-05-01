@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     CPUInfo cpuInfo;
     MainWindow w;
     SwitchHeader header(&w);
-    header.setGeometry(20,20,300,40);
+    header.setGeometry(20,10,300,40);
     header.append("aa");
     header.append("aa");
     header.append("aa");
@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
     header.append("aa");
     header.setCurrentIndex(0);
     DisplayCorePage w2(cpuInfo.cores[1], &w);
+    w2.move(50,50);
     w.resize(1100,600);
     w.show();
 

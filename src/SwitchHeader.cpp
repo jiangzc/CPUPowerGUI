@@ -2,6 +2,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QPalette>
+#include <QDebug>
 #include <QMouseEvent>
 #include "SwitchHeader.h"
 
@@ -14,7 +15,7 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
     palette.setColor(QPalette::Background, QColor(53, 152, 219));   // 背景颜色
     palette.setColor(QPalette::Highlight, QColor(40, 116, 166));    // 选中颜色
     palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
-    palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
+    palette.setColor(QPalette::Light, QColor(93, 173, 22));        // 悬浮颜色
     this->setPalette(palette);
     m_mouse.rx() = m_mouse.ry() = -1;
 }
@@ -111,12 +112,16 @@ void SwitchHeader::paintEvent(QPaintEvent *)
 
 void SwitchHeader::mousePressEvent(QMouseEvent *e)
 {
-
+    m_mouse = e->pos();
+    qDebug() << m_mouse;
+    update();
 }
 
 void SwitchHeader::mouseMoveEvent(QMouseEvent *e)
 {
     m_mouse = e->pos();
+    qDebug() << m_mouse;
+    update();
 }
 
 void SwitchHeader::enterEvent(QEvent *event)
