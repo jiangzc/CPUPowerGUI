@@ -14,12 +14,12 @@ public:
     void append(QString text);
     bool insert(int index, QString text);
     bool remove(int index);
-    int currentIndex();
-    QString currentText();
-    QString getText(int index);
+    int currentIndex() const;
+    QString currentText() const;
+    QString getText(int index) const;
     bool setText(int index, QString text);
     bool setIndex(int index);
-    int count();
+    int count() const;
 
     QSize sizeHint() const override;
 
