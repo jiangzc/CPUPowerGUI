@@ -8,5 +8,6 @@
         <file>pic/btncheckon1.png</file>
         <file>pic/btncheckon2.png</file>
         <file>pic/btncheckon3.png</file>
+        <file>pic/cpulogo.png</file>
     </qresource>
 </RCC>

@@ -11,6 +11,7 @@
 #include "PolicyDisplayWidget.h"
 #include "PolicyEditorWidget.h"
 #include "SwitchHeader.h"
+#include "MainPage.h"
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -36,18 +37,20 @@ int main(int argc, char *argv[])
 
     CPUInfo cpuInfo;
     MainWindow w;
-    SwitchHeader header(&w);
-    header.move(50, 20);
+//    SwitchHeader header(&w);
+//    header.move(50, 20);
 
-    header.append("All");
-    for (int i = 0; i < cpuInfo.cores.count(); i++)
-    {
-        header.append("CPU " + QString::number(i));
-    }
-    header.adjustSize();
-    header.setCurrentIndex(0);
-    DisplayCorePage w2(cpuInfo.cores[1], &w);
-    w2.move(50,80);
+//    header.append("All");
+//    for (int i = 0; i < cpuInfo.cores.count(); i++)
+//    {
+//        header.append("CPU " + QString::number(i));
+//    }
+//    header.adjustSize();
+//    header.setCurrentIndex(0);
+//    DisplayCorePage w2(cpuInfo.cores[1], &w);
+//    w2.move(50,80);
+    MainPage page(cpuInfo  ,&w);
+    // page.show();
     w.resize(1200,700);
     w.show();
 

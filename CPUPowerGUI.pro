@@ -29,6 +29,7 @@ SOURCES += \
         src/CPUInfo.cpp \
         src/CPUPolicy.cpp \
         src/DisplayCorePage.cpp \
+        src/MainPage.cpp \
         src/MainWindow.cpp \
         src/PolicyDisplayWidget.cpp \
         src/PolicyEditorWidget.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
         src/CPUPolicy.h \
         src/DisplayCorePage.h \
         src/DisplayUI.h \
+        src/MainPage.h \
         src/MainWindow.h \
         src/PolicyDisplayWidget.h \
         src/PolicyEditorWidget.h \
