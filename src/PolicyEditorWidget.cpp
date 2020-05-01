@@ -106,7 +106,7 @@ void PolicyEditorWidget::initFirstLine(int &row)
     font.setPixelSize(20);
     popLabel->setFont(font);
     popLabel->setText("");
-    popLabel->setFixedWidth(200);
+    popLabel->setFixedSize(200, 60);
     popLabel->setWordWrap(true);
 
     editorLayout->setRowMinimumHeight(row, 40);

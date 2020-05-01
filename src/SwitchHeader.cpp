@@ -12,8 +12,8 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
     QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(53, 152, 219));       // 背景颜色
-    palette.setColor(QPalette::Highlight, QColor(40, 116, 166));    // 选中颜色
+    palette.setColor(QPalette::Window, QColor(41, 128, 185));       // 背景颜色
+    palette.setColor(QPalette::Highlight, QColor(33, 97, 140));     // 选中颜色
     palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
     palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
     this->setPalette(palette);
@@ -121,8 +121,12 @@ void SwitchHeader::paintEvent(QPaintEvent *)
         painter.drawRect(itemRect.x() + itemRect.width(), 0, spliterWidth, height());
     }
     // draw text
-    painter.setFont(font());
-    painter.setPen(QPen(palette().windowText().color()));
+    QFont font = this->font();
+    font.setWeight(QFont::Medium);
+    font.setStyleStrategy(QFont::PreferAntialias);
+    painter.setFont(font);
+    QPen pen(palette().windowText().color());
+    painter.setPen(pen);
     for (int i = 0; i < list.count(); i++)
     {
         itemRect = indexToRect(i);
