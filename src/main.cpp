@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
     QFont font = a.font();
     font.setPixelSize(16);
     a.setFont(font);
-    a.setPalette( QPalette(QColor(247, 247, 247) ));
 
     CPUInfo cpuInfo;
     MainWindow w;

@@ -15,6 +15,8 @@
 #include "PolicyEditorWidget.h"
 #include "CPUInfo.h"
 #include "imageswitch.h"
+#include <errno.h>
+#include <string.h>
 
 PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidget(parent)
 {
@@ -27,7 +29,6 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
 
     // 控件内布局
     editorLayout = new QGridLayout;
-
     editorLayout->setSpacing(20);
 
     // 第一行： CPU编号 开启关闭按钮  消息标签
@@ -49,7 +50,9 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
         bool ret = core->setEnabled(checked);
         this->popMessage(ret);
         if (!ret)
+        {
             cpuSwitch->setChecked(!checked);
+        }
     });
     firstLine->addWidget(cpuID, Qt::AlignBaseline);
     firstLine->addWidget(cpuSwitch, Qt::AlignBaseline);
@@ -59,7 +62,8 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     font.setPixelSize(20);
     popLabel->setFont(font);
     popLabel->setText("");
-    popLabel->setMaximumWidth(200);
+    popLabel->setMaximumWidth(400);
+    popLabel->setWordWrap(true);
 
     editorLayout->setRowMinimumHeight(row, 40);
     editorLayout->addLayout(firstLine, row, 0);
@@ -126,12 +130,12 @@ void PolicyEditorWidget::popMessage(bool ok, QString msg)
 {
     QPalette palette = popLabel->palette();
     if (ok)
-        palette.setColor(QPalette::ColorRole::WindowText, QColor("#009900"));
+        palette.setColor(QPalette::ColorRole::WindowText, QColor("#228B22"));
     else
         palette.setColor(QPalette::ColorRole::WindowText, QColor("#CC0000"));
     popLabel->setPalette(palette);
     if (msg.isEmpty())
-        msg = ok ? "yes" : "no";
+        msg = ok ? "Succeed" : strerror(errno);
     popLabel->setText(msg);
 }
 
@@ -217,10 +221,11 @@ void PolicyEditorWidget::paintEvent(QPaintEvent *)
 
 bool PolicyEditorWidget::applyChanges()
 {
-    QString msg;
+    int succeed = 0;
+    int failed = 0;
     for (const auto &item : this->children())
     {
-        auto policy = core->policies.value(item->objectName());
+        const auto &policy = core->policies.value(item->objectName());
         QString widgetValue;
 
         if (dynamic_cast<QLineEdit*>(item) != nullptr)
@@ -230,7 +235,6 @@ bool PolicyEditorWidget::applyChanges()
         if (dynamic_cast<QSlider*>(item) != nullptr)
         {
             widgetValue = QString::number(dynamic_cast<QSlider*>(item)->value() * 1000);
-            qDebug() << widgetValue;
         }
         if (dynamic_cast<QComboBox*>(item) != nullptr)
         {
@@ -238,13 +242,21 @@ bool PolicyEditorWidget::applyChanges()
         }
         if ( policy.value != widgetValue)
         {
-            qDebug () << policy.name <<  widgetValue;
             if (core->setPolicy(policy.name, widgetValue))
-            {
-                msg += QString("set: %0; ").arg(policy.name);
-            }
+                succeed++;
+            else
+                failed++;
         }
     }
-    popMessage(true, msg);
-    return true;
+    if (failed == 0)
+    {
+        popMessage(true , QString("%0 succeed, %1 failed.").arg(succeed).arg(failed));
+        return true;
+    }
+    else
+    {
+        popMessage(false , QString("%0 succeed, %1 failed. %2").arg(succeed).arg(failed).arg(strerror(errno)));
+        return false;
+    }
+
 }
