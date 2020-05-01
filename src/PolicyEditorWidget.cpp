@@ -21,10 +21,10 @@
 PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidget(parent)
 {
     core = &_core;
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    this->setAutoFillBackground(true);
-    this->setPalette(palette);
+//    QPalette palette = this->palette();
+//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
+//    this->setAutoFillBackground(true);
+//    this->setPalette(palette);
     this->setContentsMargins(5,5,5,5);
 
     // 控件内布局

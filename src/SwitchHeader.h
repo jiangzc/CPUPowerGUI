@@ -18,7 +18,7 @@ public:
     QString currentText() const;
     QString getText(int index) const;
     bool setText(int index, QString text);
-    bool setIndex(int index);
+    void setCurrentIndex(int index);
     int count() const;
 
     QSize sizeHint() const override;
@@ -26,6 +26,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
 private:
     QVector<QString> list;
     int m_currentIndex;
