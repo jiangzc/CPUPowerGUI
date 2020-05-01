@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QVariant>
+#include <QJsonObject>
 #include "CPUCore.h"
 #include "CPUPolicy.h"
 
@@ -45,22 +46,52 @@ bool CPUCore::setEnabled(bool enable)
 bool CPUCore::setPolicy(QString name, QVariant value)
 {
     bool ret = false;
-    for (auto &policy : policies)
+    auto &policy = policies[name];
+
+    if (policy.isWriteable && policy.name == name)
     {
-        if (policy.isWriteable && policy.name == name)
+        policy.value = value.toString();
+        QFile file(m_coreDir.absoluteFilePath("cpufreq/" + name));
+        if (file.exists() && file.open(QIODevice::WriteOnly))
         {
-            policy.value = value.toString();
-            QFile file(m_coreDir.absoluteFilePath("cpufreq/" + name));
-            if (file.exists() && file.open(QIODevice::WriteOnly))
-            {
-                if (file.write(value.toString().toLatin1()) != -1)
-                    ret = true;
-                file.close();
-                break;
-            }
+            if (file.write(value.toString().toLatin1()) != -1)
+                ret = true;
+            file.close();
         }
     }
+
     return ret;
+}
+
+
+QJsonObject CPUCore::dumpSettings()
+{
+    QJsonObject writablePolicies;
+    for (auto &item : policies)
+    {
+        if (item.isWriteable)
+        {
+            writablePolicies[item.name] = item.value;
+        }
+    }
+    QJsonObject obj;
+    obj["id"] = core_id();
+    obj["isEnabled"] = isEnabled();
+    obj["policies"] = writablePolicies;
+    return obj;
+}
+
+void CPUCore::loadSettings(const QJsonObject &obj)
+{
+    if (obj["id"] == core_id())
+    {
+        setEnabled(obj["isEnabled"].toBool(true));
+        QJsonObject writablePolicies = obj["policies"].toObject();
+        for (auto item = writablePolicies.constBegin(); item != writablePolicies.constEnd(); item++)
+        {
+            setPolicy(item.key(), item.value());
+        }
+    }
 }
 
 
@@ -96,6 +127,40 @@ bool CPUCore::update()
     }
 
     return ret;
+}
+
+bool CPUCore::checkPredefinedGoverns(PREDEFINED_GOVERNS gov)
+{
+    if (gov == PREDEFINED_GOVERNS::Performance)
+    {
+        return (policies[KnownCPUPolicy::scaling_governor].value == "performance") &&
+               (policies[KnownCPUPolicy::scaling_max_freq].value == policies[KnownCPUPolicy::cpuinfo_max_freq].value);
+    }
+    if (gov == PREDEFINED_GOVERNS::Fast)
+    {
+        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
+                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 2/3) ;
+    }
+    if (gov == PREDEFINED_GOVERNS::Normal)
+    {
+        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
+                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/2) ;
+    }
+    if (gov == PREDEFINED_GOVERNS::Slow)
+    {
+        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
+                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/3) ;
+    }
+    if (gov == PREDEFINED_GOVERNS::Powersave)
+    {
+        return (policies[KnownCPUPolicy::scaling_governor].value == "powersave") &&
+               (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() <=
+                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/3);
+    }
+
+
+
+    return false;
 }
 
 short CPUCore::core_id() { return m_core_id; }

@@ -7,6 +7,14 @@
 
 class CPUPolicy;
 
+enum PREDEFINED_GOVERNS {
+    Performance,
+    Fast,
+    Normal,
+    Slow,
+    Powersave
+};
+
 class CPUCore
 {
 
@@ -19,8 +27,10 @@ public:
 
     QMap<QString, CPUPolicy> policies;
     bool setPolicy(QString name, QVariant value);
-
+    QJsonObject dumpSettings();
+    void loadSettings(const QJsonObject &obj);
     bool update();
+    bool checkPredefinedGoverns(PREDEFINED_GOVERNS gov);
 
 
 private:
