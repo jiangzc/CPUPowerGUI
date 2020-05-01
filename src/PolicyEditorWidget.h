@@ -15,19 +15,23 @@ class PolicyEditorWidget : public QWidget
     Q_OBJECT
 public:
     explicit PolicyEditorWidget(CPUCore &_core, QWidget *parent = nullptr);
-
+    QMap<QString, QString> dumpPolicySettings();
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
     virtual QSize sizeHint() const override;
 
 private:
     CPUCore *core;
-    QLabel *popLabel;
-    void popMessage(bool ok, QString msg="");
+    QLabel *popLabel; // 提示消息的标签
+    void popMessage(bool ok, QString msg=""); // 更新提示消息
     QGridLayout *editorLayout;
-    QPair<QWidget*, QWidget*>  getEdiorPolicyValueWidget(const CPUPolicy &policy);
+    void initFirstLine(int &row); // 初始化第一行界面元素：CPU编号 开启关闭按钮  消息标签
+    void initSettingLines(int &row); // 初始化设置行
+    QPair<QWidget*, QWidget*>  getEdiorPolicyValueWidget(const CPUPolicy &policy); // 动态创建控件
     virtual void paintEvent(QPaintEvent *e) override;
-    bool applyChanges();
+
+private slots:
+    bool applyChanges(); // 点击Apply按钮的槽函数
 
 signals:
 

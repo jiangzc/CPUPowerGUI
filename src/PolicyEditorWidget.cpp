@@ -31,73 +31,12 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     editorLayout = new QGridLayout;
     editorLayout->setSpacing(20);
 
-    // 第一行： CPU编号 开启关闭按钮  消息标签
     int row = 0;
-    QHBoxLayout *firstLine = new QHBoxLayout;
-
-    QLabel *cpuID = new QLabel;
-    cpuID->setText(QString("CPU %0").arg(core->core_id()));
-    QFont font = cpuID->font();
-    font.setPixelSize(28);
-    font.setBold(true);
-    cpuID->setFont(font);
-
-    ImageSwitch *cpuSwitch = new ImageSwitch();
-    cpuSwitch->setButtonStyle(ImageSwitch::ButtonStyle_3);
-    cpuSwitch->setChecked(core->isEnabled());
-    cpuSwitch->setFixedHeight(30);
-    connect(cpuSwitch, &ImageSwitch::checked, this, [=](bool checked){
-        bool ret = core->setEnabled(checked);
-        this->popMessage(ret);
-        if (!ret)
-        {
-            cpuSwitch->setChecked(!checked);
-        }
-    });
-    firstLine->addWidget(cpuID, Qt::AlignBaseline);
-    firstLine->addWidget(cpuSwitch, Qt::AlignBaseline);
-
-    popLabel = new QLabel;
-    font = popLabel->font();
-    font.setPixelSize(20);
-    popLabel->setFont(font);
-    popLabel->setText("");
-    popLabel->setMaximumWidth(400);
-    popLabel->setWordWrap(true);
-
-    editorLayout->setRowMinimumHeight(row, 40);
-    editorLayout->addLayout(firstLine, row, 0);
-    editorLayout->addWidget(popLabel, row, 1, 1, 2, Qt::AlignLeft);
-
-    row++;
-    for (const auto &policy : core->policies)
-    {
-        if (policy.isWriteable)
-        {
-            QLabel *label = new QLabel;
-            label->setMaximumWidth(200);
-            label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-            label->setText(policy.name);
-            editorLayout->setRowMinimumHeight(row, 40);
-            auto widgets = getEdiorPolicyValueWidget(policy);
-            QWidget *widget1 = widgets.first;
-            QWidget *widget2 = widgets.second;
-
-            if (widget1 != nullptr)
-            {
-                widget1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                editorLayout->addWidget(label, row, 0, Qt::AlignVCenter);
-                editorLayout->addWidget(widget1, row, 1, Qt::AlignVCenter);
-            }
-            if (widget2 != nullptr)
-            {
-                widget2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                editorLayout->addWidget(widget2, row, 2, Qt::AlignVCenter);
-            }
-            row++;
-        }
-    }
-
+    // 第一行： CPU编号 开启关闭按钮  消息标签
+    initFirstLine(row);
+    // 设置行：动态创建控件
+    initSettingLines(row);
+    // 结束行： 按钮
     QPushButton *applyButton = new QPushButton;
     applyButton->setText("Apply");
     applyButton->setFixedWidth(120);
@@ -107,6 +46,7 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     this->setLayout(editorLayout);
 
 }
+
 
 bool PolicyEditorWidget::eventFilter(QObject *obj, QEvent *event)
 {
@@ -137,6 +77,77 @@ void PolicyEditorWidget::popMessage(bool ok, QString msg)
     if (msg.isEmpty())
         msg = ok ? "Succeed" : strerror(errno);
     popLabel->setText(msg);
+}
+
+void PolicyEditorWidget::initFirstLine(int &row)
+{
+    QHBoxLayout *firstLine = new QHBoxLayout;
+    // CPU 编号
+    QLabel *cpuID = new QLabel;
+    cpuID->setText(QString("CPU %0").arg(core->core_id()));
+    QFont font = cpuID->font();
+    font.setPixelSize(28);
+    font.setBold(true);
+    cpuID->setFont(font);
+    // 选择开关
+    ImageSwitch *cpuSwitch = new ImageSwitch();
+    cpuSwitch->setButtonStyle(ImageSwitch::ButtonStyle_3);
+    cpuSwitch->setChecked(core->isEnabled());
+    cpuSwitch->setFixedHeight(30);
+    connect(cpuSwitch, &ImageSwitch::checked, this, [=](bool checked){
+        bool ret = core->setEnabled(checked);
+        this->popMessage(ret);
+        if (!ret)
+        {
+            cpuSwitch->setChecked(!checked);
+        }
+    });
+    firstLine->addWidget(cpuID, Qt::AlignBaseline);
+    firstLine->addWidget(cpuSwitch, Qt::AlignBaseline);
+    // 提示消息
+    popLabel = new QLabel;
+    font = popLabel->font();
+    font.setPixelSize(20);
+    popLabel->setFont(font);
+    popLabel->setText("");
+    popLabel->setFixedWidth(200);
+    popLabel->setWordWrap(true);
+
+    editorLayout->setRowMinimumHeight(row, 40);
+    editorLayout->addLayout(firstLine, row, 0);
+    editorLayout->addWidget(popLabel, row, 1, 1, 2, Qt::AlignLeft);
+    row++;
+}
+
+void PolicyEditorWidget::initSettingLines(int &row)
+{
+    for (const auto &policy : core->policies)
+    {
+        if (policy.isWriteable)
+        {
+            QLabel *label = new QLabel;
+            label->setMaximumWidth(200);
+            label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            label->setText(policy.name);
+            editorLayout->setRowMinimumHeight(row, 40);
+            auto widgets = getEdiorPolicyValueWidget(policy);
+            QWidget *widget1 = widgets.first;
+            QWidget *widget2 = widgets.second;
+
+            if (widget1 != nullptr)
+            {
+                widget1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                editorLayout->addWidget(label, row, 0, Qt::AlignVCenter);
+                editorLayout->addWidget(widget1, row, 1, Qt::AlignVCenter);
+            }
+            if (widget2 != nullptr)
+            {
+                widget2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                editorLayout->addWidget(widget2, row, 2, Qt::AlignVCenter);
+            }
+            row++;
+        }
+    }
 }
 
 QPair<QWidget*, QWidget*> PolicyEditorWidget::getEdiorPolicyValueWidget(const CPUPolicy &policy)
@@ -219,10 +230,9 @@ void PolicyEditorWidget::paintEvent(QPaintEvent *)
     painter.drawRoundedRect(this->rect(), 12, 12);
 }
 
-bool PolicyEditorWidget::applyChanges()
+QMap<QString, QString> PolicyEditorWidget::dumpPolicySettings()
 {
-    int succeed = 0;
-    int failed = 0;
+    QMap<QString, QString> settings;
     for (const auto &item : this->children())
     {
         const auto &policy = core->policies.value(item->objectName());
@@ -240,9 +250,23 @@ bool PolicyEditorWidget::applyChanges()
         {
             widgetValue = dynamic_cast<QComboBox*>(item)->currentText();
         }
-        if ( policy.value != widgetValue)
+        settings[policy.name] = widgetValue;
+    }
+    return settings;
+}
+
+
+bool PolicyEditorWidget::applyChanges()
+{
+    int succeed = 0;
+    int failed = 0;
+    bool ret;
+    auto settings = dumpPolicySettings();
+    for (auto item = settings.cbegin(); item != settings.cend(); item++)
+    {
+        if ( core->policies[item.key()].value != item.value())
         {
-            if (core->setPolicy(policy.name, widgetValue))
+            if (core->setPolicy(item.key(), item.value()))
                 succeed++;
             else
                 failed++;
@@ -251,12 +275,13 @@ bool PolicyEditorWidget::applyChanges()
     if (failed == 0)
     {
         popMessage(true , QString("%0 succeed, %1 failed.").arg(succeed).arg(failed));
-        return true;
+        ret = true;
     }
     else
     {
         popMessage(false , QString("%0 succeed, %1 failed. %2").arg(succeed).arg(failed).arg(strerror(errno)));
-        return false;
+        ret = false;
     }
-
+    core->update();
+    return ret;
 }
