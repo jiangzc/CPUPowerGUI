@@ -16,8 +16,8 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     monitor = new PolicyDisplayWidget(_core, this);
     editor = new PolicyEditorWidget(_core, this);
 
-    monitor->move(40, 40);
-    editor->move(500,40);
+    monitor->move(0, 0);
+    editor->move(500, 0);
     resize(1100,600);
 }
 

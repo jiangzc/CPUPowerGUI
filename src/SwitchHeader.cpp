@@ -6,17 +6,21 @@
 #include <QMouseEvent>
 #include "SwitchHeader.h"
 
-const int spliterWidth = 20;
+const int spliterWidth = 2;
 const int radius = 6;
 SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
     QPalette palette = this->palette();
-    palette.setColor(QPalette::Background, QColor(53, 152, 219));   // 背景颜色
+    palette.setColor(QPalette::Window, QColor(53, 152, 219));       // 背景颜色
     palette.setColor(QPalette::Highlight, QColor(40, 116, 166));    // 选中颜色
     palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
-    palette.setColor(QPalette::Light, QColor(93, 173, 22));        // 悬浮颜色
+    palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
     this->setPalette(palette);
+    QFont font = this->font();
+    font.setPixelSize(16);
+    this->setFont(font);
+
     m_mouse.rx() = m_mouse.ry() = -1;
 }
 
@@ -79,12 +83,18 @@ bool SwitchHeader::setText(int index, const QString &text)
 
 void SwitchHeader::setCurrentIndex(int index)
 {
-    m_currentIndex = index;
+    if (index != m_currentIndex)
+    {
+        m_currentIndex = index;
+        update();
+        emit indexChanged(index);
+    }
+
 }
 
 QSize SwitchHeader::sizeHint() const
 {
-    return QSize(100 * list.count(), 40);
+    return QSize(80 * list.count(), 40);
 }
 
 void SwitchHeader::paintEvent(QPaintEvent *)
@@ -92,11 +102,14 @@ void SwitchHeader::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(palette().background());
+    painter.setBrush(palette().window());
     painter.drawRoundedRect(rect(), radius, radius);
     // draw hover rect
-    int hoverIndex = pointToIndex(m_mouse);
-    drawIndexRect(painter, hoverIndex, palette().light());
+    if (isHover)
+    {
+        int hoverIndex = pointToIndex(m_mouse);
+        drawIndexRect(painter, hoverIndex, palette().light());
+    }
     // draw selected rect
     drawIndexRect(painter, m_currentIndex, palette().highlight());
     // draw spliter
@@ -105,33 +118,40 @@ void SwitchHeader::paintEvent(QPaintEvent *)
     for (int i = 0; i < list.count() - 1; i++)
     {
         itemRect = indexToRect(i);
-        painter.drawRect(itemRect.x() + itemRect.width() + 1, 0, spliterWidth-2, height());
+        painter.drawRect(itemRect.x() + itemRect.width(), 0, spliterWidth, height());
+    }
+    // draw text
+    painter.setFont(font());
+    painter.setPen(QPen(palette().windowText().color()));
+    for (int i = 0; i < list.count(); i++)
+    {
+        itemRect = indexToRect(i);
+        painter.drawText(itemRect, Qt::AlignCenter, list[i]);
     }
 
 }
 
 void SwitchHeader::mousePressEvent(QMouseEvent *e)
 {
-    m_mouse = e->pos();
-    qDebug() << m_mouse;
-    update();
+    setCurrentIndex(pointToIndex(e->pos()));
 }
 
 void SwitchHeader::mouseMoveEvent(QMouseEvent *e)
 {
     m_mouse = e->pos();
-    qDebug() << m_mouse;
     update();
 }
 
 void SwitchHeader::enterEvent(QEvent *event)
 {
     isHover = true;
+    update();
 }
 
 void SwitchHeader::leaveEvent(QEvent *event)
 {
     isHover = false;
+    update();
 }
 
 int SwitchHeader::pointToIndex(const QPoint &p) const
@@ -151,18 +171,18 @@ void SwitchHeader::drawIndexRect(QPainter &painter, int index, QBrush brush) con
     painter.setBrush(brush);
     if (index > 0 && index < list.count() - 1)
     {
-        painter.drawRect(indexToRect(index).adjusted(-1,0,1,0));
+        painter.drawRect(indexToRect(index));
     }
     if (index == 0)
     {
         painter.drawRoundedRect(0, 0, radius * 2, height(), radius, radius);
-        painter.drawRect(QRect(QPoint(radius, 0), QPoint(indexToRect(0).width(), height())));
+        painter.drawRect(QRect(QPoint(radius, 0), QPoint(indexToRect(0).width() - 1, height())));
     }
     if (index == count() - 1)
     {
         QRect lastRect = indexToRect(count() - 1);
         painter.drawRoundedRect(width() - radius * 2, 0, radius * 2, height(), radius, radius);
-        painter.drawRect(QRect(lastRect.topLeft(), QSize(lastRect.width() - radius, height())));
+        painter.drawRect(QRect(lastRect.x() , 0, lastRect.width() - radius, height()));
     }
 }
 

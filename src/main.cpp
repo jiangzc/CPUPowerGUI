@@ -37,16 +37,18 @@ int main(int argc, char *argv[])
     CPUInfo cpuInfo;
     MainWindow w;
     SwitchHeader header(&w);
-    header.setGeometry(20,10,300,40);
-    header.append("aa");
-    header.append("aa");
-    header.append("aa");
-    header.append("aa");
-    header.append("aa");
+    header.move(50, 20);
+
+    header.append("All");
+    for (int i = 0; i < cpuInfo.cores.count(); i++)
+    {
+        header.append("CPU " + QString::number(i));
+    }
+    header.adjustSize();
     header.setCurrentIndex(0);
     DisplayCorePage w2(cpuInfo.cores[1], &w);
-    w2.move(50,50);
-    w.resize(1100,600);
+    w2.move(50,80);
+    w.resize(1200,700);
     w.show();
 
     return a.exec();
