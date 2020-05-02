@@ -1,3 +1,4 @@
+#include <QHBoxLayout>
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 #include "PolicyDisplayWidget.h"
@@ -16,8 +17,13 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     monitor = new PolicyDisplayWidget(_core, this);
     editor = new PolicyEditorWidget(_core, this);
 
-    monitor->move(0, 0);
-    editor->move(450, 0);
+    auto mainLayout = new QHBoxLayout(this);
+    mainLayout->addStretch();
+    mainLayout->addWidget(monitor);
+    mainLayout->addSpacing(50);
+    mainLayout->addWidget(editor);
+    mainLayout->addStretch();
+
     resize(1100,600);
 }
 

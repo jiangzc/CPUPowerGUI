@@ -13,7 +13,8 @@ class DisplayCorePage : public QWidget
     Q_OBJECT
 public:
     explicit DisplayCorePage(CPUCore& _core, QWidget *parent = nullptr);
-
+    void startTimer();
+    void stopTimer();
 protected:
 
 

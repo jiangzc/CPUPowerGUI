@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QPixmap>
+class SwitchHeader;
+class QStackedLayout;
+class QVBoxLayout;
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -12,6 +15,9 @@ public:
 
 private:
     QPixmap background;
+    SwitchHeader *header;
+    QVBoxLayout *mainLayout;
+    QStackedLayout *stackLayout;
 signals:
 
 public slots:

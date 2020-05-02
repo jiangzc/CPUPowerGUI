@@ -1,17 +1,11 @@
 #include <QApplication>
-#include <QColor>
 #include <QFont>
 #include <QFile>
-#include <QDebug>
-#include <QJsonObject>
+#include <QScreen>
+#include <QSize>
+#include <QWindow>
 #include <QMessageBox>
-#include "DisplayCorePage.h"
-#include "CPUInfo.h"
 #include "MainWindow.h"
-#include "PolicyDisplayWidget.h"
-#include "PolicyEditorWidget.h"
-#include "SwitchHeader.h"
-#include "MainPage.h"
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -36,22 +30,8 @@ int main(int argc, char *argv[])
     a.setFont(font);
 
     MainWindow w;
-//    SwitchHeader header(&w);
-//    header.move(50, 20);
-
-//    header.append("All");
-//    for (int i = 0; i < cpuInfo.cores.count(); i++)
-//    {
-//        header.append("CPU " + QString::number(i));
-//    }
-//    header.adjustSize();
-//    header.setCurrentIndex(0);
-//    DisplayCorePage w2(cpuInfo.cores[1], &w);
-//    w2.move(50,80);
-    CPUInfo &cpuInfo = CPUInfo::instance();
-    MainPage page(cpuInfo  ,&w);
-    // page.show();
-    w.resize(1200,700);
+    QSize showPos = (a.primaryScreen()->availableSize() - w.size()) / 2;
+    w.move(showPos.width(), showPos.height());
     w.show();
 
 

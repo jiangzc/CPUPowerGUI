@@ -1,9 +1,41 @@
 #include <QPainter>
+#include <QStackedLayout>
+#include <QVBoxLayout>
+#include <QDebug>
 #include "MainWindow.h"
+#include "MainPage.h"
+#include "DisplayCorePage.h"
+#include "SwitchHeader.h"
+#include "CPUInfo.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
+    // setFixedSize(1200, 700);
     background.load(":/res/pic/cpu_blue.jpg");
+    mainLayout = new QVBoxLayout(this);
+    header = new SwitchHeader;
+    header->append("All");
+    for (int i = 0; i < CPUInfo::instance().cores.count(); i++)
+    {
+        header->append("CPU " + QString::number(i));
+    }
+    header->adjustSize();
+    mainLayout->addSpacing(20);
+    header->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    mainLayout->addWidget(header, 0, Qt::AlignCenter);
+    mainLayout->addSpacing(20);
+
+    stackLayout = new QStackedLayout;
+    auto mainPage = new MainPage(CPUInfo::instance());
+    stackLayout->addWidget(mainPage);
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        auto corePage = new DisplayCorePage(core);
+        stackLayout->addWidget(corePage);
+    }
+    mainLayout->addLayout(stackLayout);
+
+    connect(header, &SwitchHeader::indexChanged, stackLayout, &QStackedLayout::setCurrentIndex);
 }
 
 void MainWindow::paintEvent(QPaintEvent *)

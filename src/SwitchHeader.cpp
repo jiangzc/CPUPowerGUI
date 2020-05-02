@@ -94,7 +94,7 @@ void SwitchHeader::setCurrentIndex(int index)
 
 QSize SwitchHeader::sizeHint() const
 {
-    return QSize(80 * list.count(), 40);
+    return QSize(100 * list.count(), 40);
 }
 
 void SwitchHeader::paintEvent(QPaintEvent *)
