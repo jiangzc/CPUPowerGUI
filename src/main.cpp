@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     a.setFont(font);
 
     MainWindow w;
+    w.adjustSize();
     QSize showPos = (a.primaryScreen()->availableSize() - w.size()) / 2;
     w.move(showPos.width(), showPos.height());
     w.show();

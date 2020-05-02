@@ -20,7 +20,6 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     nameLabel->adjustSize();
 
     overview = new QLabel(this);
-    //overview->move(280,100);
     font.setPixelSize(18);
     overview->setFont(font);
     QPalette palette = overview->palette();
@@ -38,7 +37,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     area->setAutoFillBackground(true);
     area->setFrameStyle(QFrame::NoFrame);
     area->setWidget(overview);
-    area->move(250, 110);
+    area->move(250, 100);
     area->setFixedSize(800,200);
     area->installEventFilter(this);
 
@@ -55,8 +54,9 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->append("Normal");
     modeGovern->append("Slow");
     modeGovern->append("Powersave");
-    modeGovern->move(250, 400);
-    modeGovern->resize(700, 40);
+    modeGovern->append("Custom");
+    modeGovern->move(250, 310);
+    modeGovern->resize(800, 40);
 }
 
 void MainPage::paintEvent(QPaintEvent *)

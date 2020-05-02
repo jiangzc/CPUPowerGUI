@@ -15,14 +15,16 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     this->setAutoFillBackground(true);
 
     monitor = new PolicyDisplayWidget(_core, this);
+    monitor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     editor = new PolicyEditorWidget(_core, this);
+    editor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     auto mainLayout = new QHBoxLayout(this);
-    mainLayout->addStretch();
-    mainLayout->addWidget(monitor);
+    mainLayout->addStretch(1);
+    mainLayout->addWidget(monitor, 5);
     mainLayout->addSpacing(50);
-    mainLayout->addWidget(editor);
-    mainLayout->addStretch();
+    mainLayout->addWidget(editor, 5);
+    mainLayout->addStretch(1);
 
     resize(1100,600);
 }

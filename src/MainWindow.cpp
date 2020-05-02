@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
         stackLayout->addWidget(corePage);
     }
     mainLayout->addLayout(stackLayout);
+    mainLayout->addSpacing(20);
 
     connect(header, &SwitchHeader::indexChanged, stackLayout, &QStackedLayout::setCurrentIndex);
 }

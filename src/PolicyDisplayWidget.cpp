@@ -30,7 +30,8 @@ PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScr
     infoLayout = new QFormLayout(infoList);
     for (const auto &item : core->policies)
     {
-        infoLayout->addRow(item.name, getInfoListPolicyValueWidget(item));
+        if (!item.name.isEmpty())
+            infoLayout->addRow(item.name, getInfoListPolicyValueWidget(item));
     }
     infoLayout->setRowWrapPolicy(QFormLayout::RowWrapPolicy::WrapAllRows);
     infoList->setLayout(infoLayout);
