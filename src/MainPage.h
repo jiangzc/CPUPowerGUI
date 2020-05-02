@@ -7,7 +7,7 @@ class CPUInfo;
 class QLabel;
 class QPixmap;
 class QTimer;
-class SwitchHeader;
+class SwitchButton;
 class QScrollArea;
 
 class MainPage : public QWidget
@@ -26,7 +26,7 @@ private:
     QLabel *overview;
     QTimer *timer;
     QPixmap cpuLogo;
-    SwitchHeader *modeGovern;
+    SwitchButton *modeGovern;
     QScrollArea *area;
     void paintEvent(QPaintEvent *event);
     QSize sizeHint() const;

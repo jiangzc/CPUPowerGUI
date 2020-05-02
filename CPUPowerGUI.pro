@@ -33,7 +33,7 @@ SOURCES += \
         src/MainWindow.cpp \
         src/PolicyDisplayWidget.cpp \
         src/PolicyEditorWidget.cpp \
-        src/SwitchHeader.cpp \
+        src/SwitchButton.cpp \
         src/imageswitch.cpp \
         src/main.cpp
 
@@ -46,7 +46,7 @@ HEADERS += \
         src/MainWindow.h \
         src/PolicyDisplayWidget.h \
         src/PolicyEditorWidget.h \
-        src/SwitchHeader.h \
+        src/SwitchButton.h \
         src/imageswitch.h
 
 # Default rules for deployment.

@@ -5,14 +5,14 @@
 #include "MainWindow.h"
 #include "MainPage.h"
 #include "DisplayCorePage.h"
-#include "SwitchHeader.h"
+#include "SwitchButton.h"
 #include "CPUInfo.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
     background.load(":/res/pic/cpu_blue.jpg");
     mainLayout = new QVBoxLayout(this);
-    header = new SwitchHeader;
+    header = new SwitchButton;
     header->append("All");
     for (int i = 0; i < CPUInfo::instance().cores.count(); i++)
     {
@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     mainLayout->addLayout(stackLayout);
     mainLayout->addSpacing(20);
     resize(1200, 700);
-    connect(header, &SwitchHeader::indexChanged, stackLayout, [=](int index){
+    connect(header, &SwitchButton::indexChanged, stackLayout, [=](int index){
         if (index == 0)
         {
             MainPage *p = dynamic_cast<MainPage*>(stackLayout->widget(index));

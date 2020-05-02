@@ -10,7 +10,7 @@
 #include <QEvent>
 #include "MainPage.h"
 #include "CPUInfo.h"
-#include "SwitchHeader.h"
+#include "SwitchButton.h"
 #include <unistd.h>
 
 MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuInfo(cpuInfo)
@@ -52,7 +52,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     connect(timer, &QTimer::timeout, this, &MainPage::updateOverview);
     timer->start();
 
-    modeGovern = new SwitchHeader(this);
+    modeGovern = new SwitchButton(this);
     modeGovern->append("Performance");
     modeGovern->append("Fast");
     modeGovern->append("Normal");
@@ -63,7 +63,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->resize(800, 40);
     updateInfo();
 
-    connect(modeGovern, &SwitchHeader::indexChanged, this, &MainPage::setCurrentGovern);
+    connect(modeGovern, &SwitchButton::indexChanged, this, &MainPage::setCurrentGovern);
 
     QPushButton *loadSettings = new QPushButton(this);
     loadSettings->setText("Load Settings");

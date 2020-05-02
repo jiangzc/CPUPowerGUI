@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPixmap>
-class SwitchHeader;
+class SwitchButton;
 class QStackedLayout;
 class QVBoxLayout;
 class MainWindow : public QWidget
@@ -15,7 +15,7 @@ public:
 
 private:
     QPixmap background;
-    SwitchHeader *header;
+    SwitchButton *header;
     QVBoxLayout *mainLayout;
     QStackedLayout *stackLayout;
 signals:

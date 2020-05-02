@@ -5,12 +5,16 @@
 #include <QString>
 #include <QVector>
 
-// draw colors: QPalette::WindowText QPalette::Base
-class SwitchHeader : public QWidget
+//palette.setColor(QPalette::Window, QColor(46, 134, 193));       // 背景颜色
+//palette.setColor(QPalette::Highlight, QColor(33, 97, 140));     // 选中颜色
+//palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
+//palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
+
+class SwitchButton : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SwitchHeader(QWidget *parent = nullptr);
+    explicit SwitchButton(QWidget *parent = nullptr);
     void append(const QString &text);
     bool insert(int index, const QString &text);
     bool remove(int index);

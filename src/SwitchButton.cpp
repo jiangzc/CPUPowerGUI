@@ -4,11 +4,11 @@
 #include <QPalette>
 #include <QDebug>
 #include <QMouseEvent>
-#include "SwitchHeader.h"
+#include "SwitchButton.h"
 
 const int spliterWidth = 2;
 const int radius = 6;
-SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
+SwitchButton::SwitchButton(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
     QPalette palette = this->palette();
@@ -24,12 +24,12 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
     m_mouse.rx() = m_mouse.ry() = -100;
 }
 
-void SwitchHeader::append(const QString &text)
+void SwitchButton::append(const QString &text)
 {
     list.append(text);
 }
 
-bool SwitchHeader::insert(int index, const QString &text)
+bool SwitchButton::insert(int index, const QString &text)
 {
     if (0 <= index && index <= list.count())
     {
@@ -40,7 +40,7 @@ bool SwitchHeader::insert(int index, const QString &text)
         return false;
 }
 
-bool SwitchHeader::remove(int index)
+bool SwitchButton::remove(int index)
 {
     if (0 <= index && index < list.count())
     {
@@ -51,26 +51,26 @@ bool SwitchHeader::remove(int index)
         return false;
 }
 
-int SwitchHeader::currentIndex() const
+int SwitchButton::currentIndex() const
 {
     return m_currentIndex;
 }
 
-QString SwitchHeader::currentText() const
+QString SwitchButton::currentText() const
 {
     if (0 <= m_currentIndex && m_currentIndex < list.count())
         return list[m_currentIndex];
     return QString();
 }
 
-QString SwitchHeader::getText(int index) const
+QString SwitchButton::getText(int index) const
 {
     if (0 <= index && index < list.count())
         return list[index];
     return QString();
 }
 
-bool SwitchHeader::setText(int index, const QString &text)
+bool SwitchButton::setText(int index, const QString &text)
 {
     if (0 <= index && index < list.count())
     {
@@ -81,7 +81,7 @@ bool SwitchHeader::setText(int index, const QString &text)
         return false;
 }
 
-void SwitchHeader::setCurrentIndex(int index, bool sig)
+void SwitchButton::setCurrentIndex(int index, bool sig)
 {
     if (index != m_currentIndex)
     {
@@ -93,26 +93,19 @@ void SwitchHeader::setCurrentIndex(int index, bool sig)
 
 }
 
-QSize SwitchHeader::sizeHint() const
+QSize SwitchButton::sizeHint() const
 {
     return QSize(100 * list.count(), 40);
 }
 
-void SwitchHeader::paintEvent(QPaintEvent *)
+void SwitchButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
     painter.setBrush(palette().window());
     painter.drawRoundedRect(rect(), radius, radius);
-    // draw hover rect
-    if (isHover)
-    {
-        int hoverIndex = pointToIndex(m_mouse);
-        drawIndexRect(painter, hoverIndex, palette().light());
-    }
-    // draw selected rect
-    drawIndexRect(painter, m_currentIndex, palette().highlight());
+
     // draw spliter
     painter.setBrush(QColor(0,0,0, 50));
     QRect itemRect;
@@ -121,6 +114,15 @@ void SwitchHeader::paintEvent(QPaintEvent *)
         itemRect = indexToRect(i);
         painter.drawRect(itemRect.x() + itemRect.width(), 0, spliterWidth, height());
     }
+    // draw hover rect
+    if (isHover)
+    {
+        int hoverIndex = pointToIndex(m_mouse);
+        drawIndexRect(painter, hoverIndex, palette().light());
+    }
+    // draw selected rect
+    drawIndexRect(painter, m_currentIndex, palette().highlight());
+
     // draw text
     QFont font = this->font();
     font.setWeight(QFont::Medium);
@@ -136,42 +138,42 @@ void SwitchHeader::paintEvent(QPaintEvent *)
 
 }
 
-void SwitchHeader::mousePressEvent(QMouseEvent *e)
+void SwitchButton::mousePressEvent(QMouseEvent *e)
 {
     setCurrentIndex(pointToIndex(e->pos()));
 }
 
-void SwitchHeader::mouseMoveEvent(QMouseEvent *e)
+void SwitchButton::mouseMoveEvent(QMouseEvent *e)
 {
     m_mouse = e->pos();
     update();
 }
 
-void SwitchHeader::enterEvent(QEvent *event)
+void SwitchButton::enterEvent(QEvent *event)
 {
     isHover = true;
     update();
 }
 
-void SwitchHeader::leaveEvent(QEvent *event)
+void SwitchButton::leaveEvent(QEvent *event)
 {
     isHover = false;
     update();
 }
 
-int SwitchHeader::pointToIndex(const QPoint &p) const
+int SwitchButton::pointToIndex(const QPoint &p) const
 {
     int rectWidth = (width() + spliterWidth) / list.count();
     return p.x() / rectWidth;
 }
 
-QRect SwitchHeader::indexToRect(int index) const
+QRect SwitchButton::indexToRect(int index) const
 {
     int rectWidth = (width() + spliterWidth) / list.count();
     return QRect(index * rectWidth, 0, rectWidth - spliterWidth, height());
 }
 
-void SwitchHeader::drawIndexRect(QPainter &painter, int index, QBrush brush) const
+void SwitchButton::drawIndexRect(QPainter &painter, int index, QBrush brush) const
 {
     painter.setBrush(brush);
     if (index > 0 && index < list.count() - 1)
@@ -181,7 +183,7 @@ void SwitchHeader::drawIndexRect(QPainter &painter, int index, QBrush brush) con
     if (index == 0)
     {
         painter.drawRoundedRect(0, 0, radius * 2, height(), radius, radius);
-        painter.drawRect(QRect(QPoint(radius, 0), QPoint(indexToRect(0).width() - 1, height())));
+        painter.drawRect(QRect(QPoint(radius, 0), QPoint(indexToRect(0).width() , height())));
     }
     if (index == count() - 1)
     {
@@ -191,7 +193,7 @@ void SwitchHeader::drawIndexRect(QPainter &painter, int index, QBrush brush) con
     }
 }
 
-int SwitchHeader::count() const
+int SwitchButton::count() const
 {
     return list.count();
 }
