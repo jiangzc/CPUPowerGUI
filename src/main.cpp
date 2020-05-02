@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QMessageBox>
-#include "DisplayUI.h"
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 #include "MainWindow.h"
@@ -36,7 +35,6 @@ int main(int argc, char *argv[])
     font.setPixelSize(16);
     a.setFont(font);
 
-    CPUInfo cpuInfo;
     MainWindow w;
 //    SwitchHeader header(&w);
 //    header.move(50, 20);
@@ -50,15 +48,12 @@ int main(int argc, char *argv[])
 //    header.setCurrentIndex(0);
 //    DisplayCorePage w2(cpuInfo.cores[1], &w);
 //    w2.move(50,80);
+    CPUInfo &cpuInfo = CPUInfo::instance();
     MainPage page(cpuInfo  ,&w);
     // page.show();
     w.resize(1200,700);
     w.show();
-    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Performance);
-    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Fast);
-    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Normal);
-    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Slow);
-    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Powersave);
+
 
     return a.exec();
 }

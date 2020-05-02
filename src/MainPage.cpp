@@ -99,8 +99,8 @@ bool MainPage::eventFilter(QObject *obj, QEvent *event)
 void MainPage::updateOverview()
 {
     QString info;
-    info += QString("Driver: %1\n\n").arg(cpuInfo.cores[0].policies["scaling_driver"].value);
-    for (auto &core : cpuInfo.cores)
+    info += QString("Driver: %1\n\n").arg(m_cpuInfo.cores[0].policies["scaling_driver"].value);
+    for (auto &core : m_cpuInfo.cores)
     {
         info += QString("CPU %1 : isEnabled = %2,\t %3 = %4,\t %5 = %6\n")
         .arg(core.core_id()).arg(core.isEnabled())

@@ -10,13 +10,13 @@
 class CPUInfo
 {
 public:
-    CPUInfo();
+    static CPUInfo& instance();
     QString modelName;
     QVector<CPUCore> cores;
 private:
     QDir m_cpuDir;
+    CPUInfo();
 };
 
-extern CPUInfo cpuInfo;
 
 #endif // CPUINFO_H

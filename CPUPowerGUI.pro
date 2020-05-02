@@ -35,15 +35,13 @@ SOURCES += \
         src/PolicyEditorWidget.cpp \
         src/SwitchHeader.cpp \
         src/imageswitch.cpp \
-        src/main.cpp \
-        src/DisplayUI.cpp
+        src/main.cpp
 
 HEADERS += \
         src/CPUCore.h \
         src/CPUInfo.h \
         src/CPUPolicy.h \
         src/DisplayCorePage.h \
-        src/DisplayUI.h \
         src/MainPage.h \
         src/MainWindow.h \
         src/PolicyDisplayWidget.h \

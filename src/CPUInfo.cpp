@@ -3,7 +3,12 @@
 #include <QDebug>
 #include "CPUInfo.h"
 
-CPUInfo cpuInfo;
+
+CPUInfo &CPUInfo::instance()
+{
+    static CPUInfo cpuinfo;
+    return cpuinfo;
+}
 
 CPUInfo::CPUInfo() : m_cpuDir("/sys/devices/system/cpu")
 {
