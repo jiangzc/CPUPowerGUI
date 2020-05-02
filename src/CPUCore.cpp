@@ -133,7 +133,7 @@ bool CPUCore::checkPredefinedGoverns(PREDEFINED_GOVERNS gov)
 {
     bool ret = isEnabled();
     const int cpuinfo_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
-    const int scaling_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
+    const int scaling_max_freq = policies[KnownCPUPolicy::scaling_max_freq].value.toInt();
 
     if (gov == PREDEFINED_GOVERNS::Performance)
     {
@@ -165,6 +165,7 @@ void CPUCore::setPredefinedGoverns(PREDEFINED_GOVERNS gov)
 {
     const int cpuinfo_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
     const int cpuinfo_min_freq = policies[KnownCPUPolicy::cpuinfo_min_freq].value.toInt();
+    setEnabled(true);
     if (gov == PREDEFINED_GOVERNS::Performance)
     {
         setPolicy(KnownCPUPolicy::scaling_governor, "performance");

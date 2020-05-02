@@ -23,9 +23,8 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
     mainLayout->addStretch(1);
     mainLayout->addWidget(monitor, 5);
     mainLayout->addSpacing(50);
-    mainLayout->addWidget(editor, 5);
+    mainLayout->addWidget(editor, 6);
     mainLayout->addStretch(1);
 
-    resize(1100,600);
 }
 

@@ -10,7 +10,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
-    // setFixedSize(1200, 700);
     background.load(":/res/pic/cpu_blue.jpg");
     mainLayout = new QVBoxLayout(this);
     header = new SwitchHeader;
@@ -35,8 +34,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     }
     mainLayout->addLayout(stackLayout);
     mainLayout->addSpacing(20);
-
-    connect(header, &SwitchHeader::indexChanged, stackLayout, &QStackedLayout::setCurrentIndex);
+    resize(1200, 700);
+    connect(header, &SwitchHeader::indexChanged, stackLayout, [=](int index){
+        if (index == 0)
+        {
+            MainPage *p1 = dynamic_cast<MainPage*>(stackLayout->widget(index));
+            p1->updateInfo();
+        }
+        stackLayout->setCurrentIndex(index);
+    });
 }
 
 void MainWindow::paintEvent(QPaintEvent *)

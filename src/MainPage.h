@@ -15,6 +15,7 @@ class MainPage : public QWidget
     Q_OBJECT
 public:
     explicit MainPage(CPUInfo &cpuInfo, QWidget *parent = nullptr);
+    void updateInfo();
 
 signals:
 
@@ -30,6 +31,8 @@ private:
     void paintEvent(QPaintEvent *event);
     QSize sizeHint() const;
     virtual bool eventFilter(QObject *obj, QEvent *event);
+    int detectCurrentGovern();
+    void setCurrentGovern(int govern);
 
 private slots:
     void updateOverview();

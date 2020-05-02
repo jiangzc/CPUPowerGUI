@@ -18,7 +18,7 @@ public:
     QString currentText() const;
     QString getText(int index) const;
     bool setText(int index, const QString &text);
-    void setCurrentIndex(int index);
+    void setCurrentIndex(int index, bool sig=true);
     int count() const;
 
     QSize sizeHint() const override;
@@ -30,9 +30,9 @@ protected:
     void leaveEvent(QEvent *event) override;
 private:
     QVector<QString> list;
-    int m_currentIndex;
+    int m_currentIndex = -1;
     QPoint m_mouse;
-    bool isHover;
+    bool isHover = false;
     inline int pointToIndex(const QPoint &p) const;
     inline QRect indexToRect(int index) const;
     inline void drawIndexRect(QPainter &painter, int index, QBrush brush) const;

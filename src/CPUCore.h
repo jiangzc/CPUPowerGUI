@@ -8,7 +8,7 @@
 class CPUPolicy;
 
 enum PREDEFINED_GOVERNS {
-    Performance,
+    Performance = 0,
     Fast,
     Normal,
     Slow,

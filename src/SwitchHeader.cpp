@@ -21,7 +21,7 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
     font.setPixelSize(16);
     this->setFont(font);
 
-    m_mouse.rx() = m_mouse.ry() = -1;
+    m_mouse.rx() = m_mouse.ry() = -100;
 }
 
 void SwitchHeader::append(const QString &text)
@@ -81,13 +81,14 @@ bool SwitchHeader::setText(int index, const QString &text)
         return false;
 }
 
-void SwitchHeader::setCurrentIndex(int index)
+void SwitchHeader::setCurrentIndex(int index, bool sig)
 {
     if (index != m_currentIndex)
     {
         m_currentIndex = index;
         update();
-        emit indexChanged(index);
+        if (sig)
+            emit indexChanged(index);
     }
 
 }

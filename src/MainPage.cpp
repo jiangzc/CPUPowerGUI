@@ -16,7 +16,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     font.setPixelSize(22);
     nameLabel->setFont(font);
     nameLabel->setText(m_cpuInfo.modelName);
-    nameLabel->move(250, 50);
+    nameLabel->move(290, 50);
     nameLabel->adjustSize();
 
     overview = new QLabel(this);
@@ -37,7 +37,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     area->setAutoFillBackground(true);
     area->setFrameStyle(QFrame::NoFrame);
     area->setWidget(overview);
-    area->move(250, 100);
+    area->move(290, 100);
     area->setFixedSize(800,200);
     area->installEventFilter(this);
 
@@ -57,6 +57,10 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->append("Custom");
     modeGovern->move(250, 310);
     modeGovern->resize(800, 40);
+    updateInfo();
+
+    connect(modeGovern, &SwitchHeader::indexChanged, this, &MainPage::setCurrentGovern);
+
 }
 
 void MainPage::paintEvent(QPaintEvent *)
@@ -67,9 +71,9 @@ void MainPage::paintEvent(QPaintEvent *)
     QBrush brush(QColor(222,222,222,222));
     painter.setPen(Qt::NoPen);
     painter.setBrush(brush);
-    painter.drawRoundedRect(this->rect(), 12, 12);
+    painter.drawRoundedRect(50, 0, width()-100, height()-30, 12, 12);
     // CPU Logo
-    painter.drawPixmap(QRect(0, 10, 250, 250), cpuLogo, cpuLogo.rect());
+    painter.drawPixmap(QRect(50, 10, 250, 250), cpuLogo, cpuLogo.rect());
 }
 
 QSize MainPage::sizeHint() const
@@ -94,6 +98,74 @@ bool MainPage::eventFilter(QObject *obj, QEvent *event)
     {
         return QWidget::eventFilter(obj, event);
     }
+}
+
+int MainPage::detectCurrentGovern()
+{
+    bool ok;
+    PREDEFINED_GOVERNS govern;
+    ok = true;
+    govern = PREDEFINED_GOVERNS::Performance;
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        ok = ok && core.checkPredefinedGoverns(govern);
+    }
+    if (ok)
+        return govern;
+
+    govern = PREDEFINED_GOVERNS::Fast;
+    ok = true;
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        ok = ok && core.checkPredefinedGoverns(govern);
+    }
+    if (ok)
+        return govern;
+
+    govern = PREDEFINED_GOVERNS::Normal;
+    ok = true;
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        ok = ok && core.checkPredefinedGoverns(govern);
+    }
+    if (ok)
+        return govern;
+
+    govern = PREDEFINED_GOVERNS::Slow;
+    ok = true;
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        ok = ok && core.checkPredefinedGoverns(govern);
+    }
+    if (ok)
+        return govern;
+
+    govern = PREDEFINED_GOVERNS::Powersave;
+    ok = true;
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        ok = ok && core.checkPredefinedGoverns(govern);
+    }
+    if (ok)
+        return govern;
+
+
+    return PREDEFINED_GOVERNS::Custom;
+
+}
+
+void MainPage::setCurrentGovern(int govern)
+{
+    for (auto &core : CPUInfo::instance().cores)
+    {
+        core.setPredefinedGoverns(PREDEFINED_GOVERNS(govern));
+    }
+}
+
+void MainPage::updateInfo()
+{
+    updateOverview();
+    modeGovern->setCurrentIndex(detectCurrentGovern(), false);
 }
 
 void MainPage::updateOverview()

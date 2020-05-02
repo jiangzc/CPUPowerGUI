@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     QSize showPos = (a.primaryScreen()->availableSize() - w.size()) / 2;
     w.move(showPos.width(), showPos.height());
     w.show();
-
+    w.resize(1200,650);
 
     return a.exec();
 }
