@@ -4,6 +4,7 @@
 #include <QRect>
 #include <QTimer>
 #include <QScrollArea>
+#include <QPushButton>
 #include <QEvent>
 #include "MainPage.h"
 #include "CPUInfo.h"
@@ -55,11 +56,21 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->append("Slow");
     modeGovern->append("Powersave");
     modeGovern->append("Custom");
-    modeGovern->move(250, 310);
+    modeGovern->move(250, 330);
     modeGovern->resize(800, 40);
     updateInfo();
 
     connect(modeGovern, &SwitchHeader::indexChanged, this, &MainPage::setCurrentGovern);
+
+    QPushButton *loadSettings = new QPushButton(this);
+    loadSettings->setText("Load Settings");
+    loadSettings->resize(150, 40);
+    loadSettings->move(700, 430);
+
+    QPushButton *saveSettings = new QPushButton(this);
+    saveSettings->setText("Save Settings");
+    saveSettings->resize(150, 40);
+    saveSettings->move(900, 430);
 
 }
 

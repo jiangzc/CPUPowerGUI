@@ -13,6 +13,8 @@ public:
     static CPUInfo& instance();
     QString modelName;
     QVector<CPUCore> cores;
+    void dump(QString filepath);
+    void load(QString filepath);
 private:
     QDir m_cpuDir;
     CPUInfo();

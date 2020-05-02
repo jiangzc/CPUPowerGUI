@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QScreen>
 #include <QSize>
+#include <QDebug>
+#include <QDir>
 #include <QWindow>
 #include <QMessageBox>
 #include "MainWindow.h"
@@ -24,6 +26,9 @@ int main(int argc, char *argv[])
     {
         a.setStyleSheet(qssFile.readAll());
     }
+
+    // qDebug() << QDir::homePath();
+
 
     QFont font = a.font();
     font.setPixelSize(16);
