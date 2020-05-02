@@ -12,7 +12,7 @@ SwitchHeader::SwitchHeader(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
     QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(41, 128, 185));       // 背景颜色
+    palette.setColor(QPalette::Window, QColor(46, 134, 193));       // 背景颜色
     palette.setColor(QPalette::Highlight, QColor(33, 97, 140));     // 选中颜色
     palette.setColor(QPalette::WindowText, QColor(215, 219, 221));  // 文本颜色
     palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色

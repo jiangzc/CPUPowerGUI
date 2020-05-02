@@ -12,7 +12,8 @@ enum PREDEFINED_GOVERNS {
     Fast,
     Normal,
     Slow,
-    Powersave
+    Powersave,
+    Custom
 };
 
 class CPUCore
@@ -31,7 +32,7 @@ public:
     void loadSettings(const QJsonObject &obj);
     bool update();
     bool checkPredefinedGoverns(PREDEFINED_GOVERNS gov);
-
+    void setPredefinedGoverns(PREDEFINED_GOVERNS gov);
 
 private:
     QDir m_coreDir;

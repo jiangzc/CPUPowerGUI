@@ -3,6 +3,7 @@
 #include <QFont>
 #include <QFile>
 #include <QDebug>
+#include <QJsonObject>
 #include <QMessageBox>
 #include "DisplayUI.h"
 #include "DisplayCorePage.h"
@@ -53,6 +54,11 @@ int main(int argc, char *argv[])
     // page.show();
     w.resize(1200,700);
     w.show();
+    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Performance);
+    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Fast);
+    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Normal);
+    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Slow);
+    qDebug() << cpuInfo.cores[0].checkPredefinedGoverns(PREDEFINED_GOVERNS::Powersave);
 
     return a.exec();
 }

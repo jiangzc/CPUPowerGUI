@@ -131,36 +131,68 @@ bool CPUCore::update()
 
 bool CPUCore::checkPredefinedGoverns(PREDEFINED_GOVERNS gov)
 {
+    bool ret = isEnabled();
+    const int cpuinfo_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
+    const int scaling_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
+
     if (gov == PREDEFINED_GOVERNS::Performance)
     {
-        return (policies[KnownCPUPolicy::scaling_governor].value == "performance") &&
-               (policies[KnownCPUPolicy::scaling_max_freq].value == policies[KnownCPUPolicy::cpuinfo_max_freq].value);
+        ret = ret  && (policies[KnownCPUPolicy::scaling_governor].value == "performance") &&
+               (cpuinfo_max_freq == scaling_max_freq);
     }
     if (gov == PREDEFINED_GOVERNS::Fast)
     {
-        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
-                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 2/3) ;
+        ret = ret && (scaling_max_freq >= cpuinfo_max_freq * 2/3) ;
     }
     if (gov == PREDEFINED_GOVERNS::Normal)
     {
-        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
-                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/2) ;
+        ret = ret && (scaling_max_freq >= cpuinfo_max_freq * 1/2) && (scaling_max_freq < cpuinfo_max_freq * 2/3);
     }
     if (gov == PREDEFINED_GOVERNS::Slow)
     {
-        return  (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() >=
-                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/3) ;
+        ret = ret && (scaling_max_freq >= cpuinfo_max_freq * 1/3) && (scaling_max_freq < cpuinfo_max_freq * 1/2);
     }
     if (gov == PREDEFINED_GOVERNS::Powersave)
     {
-        return (policies[KnownCPUPolicy::scaling_governor].value == "powersave") &&
-               (policies[KnownCPUPolicy::scaling_max_freq].value.toInt() <=
-                policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt() * 1/3);
+        ret = ret && (policies[KnownCPUPolicy::scaling_governor].value == "powersave") &&
+              (scaling_max_freq < cpuinfo_max_freq * 1/3);
     }
 
+    return ret;
+}
 
-
-    return false;
+void CPUCore::setPredefinedGoverns(PREDEFINED_GOVERNS gov)
+{
+    const int cpuinfo_max_freq = policies[KnownCPUPolicy::cpuinfo_max_freq].value.toInt();
+    const int cpuinfo_min_freq = policies[KnownCPUPolicy::cpuinfo_min_freq].value.toInt();
+    if (gov == PREDEFINED_GOVERNS::Performance)
+    {
+        setPolicy(KnownCPUPolicy::scaling_governor, "performance");
+        setPolicy(KnownCPUPolicy::scaling_min_freq, cpuinfo_min_freq);
+        setPolicy(KnownCPUPolicy::scaling_max_freq, cpuinfo_max_freq);
+    }
+    if (gov == PREDEFINED_GOVERNS::Fast)
+    {
+        setPolicy(KnownCPUPolicy::scaling_governor, "performance");
+        setPolicy(KnownCPUPolicy::scaling_min_freq, cpuinfo_min_freq);
+        setPolicy(KnownCPUPolicy::scaling_max_freq, cpuinfo_max_freq * 2/3);
+    }
+    if (gov == PREDEFINED_GOVERNS::Normal)
+    {
+        setPolicy(KnownCPUPolicy::scaling_min_freq, cpuinfo_min_freq);
+        setPolicy(KnownCPUPolicy::scaling_max_freq, cpuinfo_max_freq * 1/2);
+    }
+    if (gov == PREDEFINED_GOVERNS::Slow)
+    {
+        setPolicy(KnownCPUPolicy::scaling_min_freq, cpuinfo_min_freq);
+        setPolicy(KnownCPUPolicy::scaling_max_freq, cpuinfo_max_freq * 1/3);
+    }
+    if (gov == PREDEFINED_GOVERNS::Powersave)
+    {
+        setPolicy(KnownCPUPolicy::scaling_governor, "powersave");
+        setPolicy(KnownCPUPolicy::scaling_min_freq, cpuinfo_min_freq);
+        setPolicy(KnownCPUPolicy::scaling_max_freq, cpuinfo_min_freq);
+    }
 }
 
 short CPUCore::core_id() { return m_core_id; }
