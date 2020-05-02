@@ -28,3 +28,8 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 
 }
 
+void DisplayCorePage::updateInfo()
+{
+    editor->updateInfo();
+}
+

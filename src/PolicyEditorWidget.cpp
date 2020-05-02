@@ -62,6 +62,11 @@ QSize PolicyEditorWidget::sizeHint() const
     return QSize(500, 500);
 }
 
+void PolicyEditorWidget::updateInfo()
+{
+    cpuSwitch->setChecked(core->isEnabled());
+}
+
 void PolicyEditorWidget::popMessage(bool ok, QString msg)
 {
     QPalette palette = popLabel->palette();
@@ -86,7 +91,7 @@ void PolicyEditorWidget::initFirstLine(int &row)
     font.setBold(true);
     cpuID->setFont(font);
     // 选择开关
-    ImageSwitch *cpuSwitch = new ImageSwitch();
+    cpuSwitch = new ImageSwitch();
     cpuSwitch->setButtonStyle(ImageSwitch::ButtonStyle_3);
     cpuSwitch->setChecked(core->isEnabled());
     cpuSwitch->setFixedHeight(30);

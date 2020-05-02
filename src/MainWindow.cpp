@@ -38,8 +38,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     connect(header, &SwitchHeader::indexChanged, stackLayout, [=](int index){
         if (index == 0)
         {
-            MainPage *p1 = dynamic_cast<MainPage*>(stackLayout->widget(index));
-            p1->updateInfo();
+            MainPage *p = dynamic_cast<MainPage*>(stackLayout->widget(index));
+            p->updateInfo();
+        }
+        else
+        {
+            DisplayCorePage *p = dynamic_cast<DisplayCorePage*>(stackLayout->widget(index));
+            p->updateInfo();
         }
         stackLayout->setCurrentIndex(index);
     });

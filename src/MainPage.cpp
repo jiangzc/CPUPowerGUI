@@ -4,11 +4,14 @@
 #include <QRect>
 #include <QTimer>
 #include <QScrollArea>
+#include <QFileDialog>
+#include <QDebug>
 #include <QPushButton>
 #include <QEvent>
 #include "MainPage.h"
 #include "CPUInfo.h"
 #include "SwitchHeader.h"
+#include <unistd.h>
 
 MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuInfo(cpuInfo)
 {
@@ -66,11 +69,23 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     loadSettings->setText("Load Settings");
     loadSettings->resize(150, 40);
     loadSettings->move(700, 430);
+    connect(loadSettings, &QPushButton::clicked, this, [=]{
+        QString filepath = QFileDialog::getOpenFileName(nullptr, "Load", QDir::homePath(), "*.json");
+        if (!filepath.isEmpty())
+            CPUInfo::instance().load(filepath);
+        updateInfo();
+    });
 
     QPushButton *saveSettings = new QPushButton(this);
     saveSettings->setText("Save Settings");
     saveSettings->resize(150, 40);
     saveSettings->move(900, 430);
+    connect(saveSettings, &QPushButton::clicked, this, [=]{
+        QString filepath = QFileDialog::getSaveFileName(nullptr, "Save", QDir::homePath(), "*.json");
+        if (!filepath.isEmpty())
+            CPUInfo::instance().dump(filepath.endsWith(".json") ? filepath : filepath + ".json");
+    });
+
 
 }
 

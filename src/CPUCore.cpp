@@ -89,7 +89,8 @@ void CPUCore::loadSettings(const QJsonObject &obj)
         QJsonObject writablePolicies = obj["policies"].toObject();
         for (auto item = writablePolicies.constBegin(); item != writablePolicies.constEnd(); item++)
         {
-            setPolicy(item.key(), item.value());
+            if (policies[item.key()].value != item.value().toString())
+                setPolicy(item.key(), item.value().toString());
         }
     }
 }
