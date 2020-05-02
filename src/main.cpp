@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setSetuidAllowed(true);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
-//    if (geteuid() != 0)
-//    {
-//        QMessageBox::critical(nullptr, "Error", "run it as root user");
-//        abort();
-//    }
+    if (geteuid() != 0)
+    {
+        QMessageBox::critical(nullptr, "Error", "Run it as root user");
+        abort();
+    }
 
     QFile qssFile(":/res/src/scrollbar.qss");
     if (qssFile.open(QIODevice::ReadOnly))
