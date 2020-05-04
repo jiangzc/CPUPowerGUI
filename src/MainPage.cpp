@@ -17,14 +17,14 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
 {
     nameLabel = new QLabel(this);
     QFont font = nameLabel->font();
-    font.setPixelSize(22);
+    font.setPointSize(15);
     nameLabel->setFont(font);
     nameLabel->setText(m_cpuInfo.modelName);
     nameLabel->move(290, 50);
     nameLabel->adjustSize();
 
     overview = new QLabel(this);
-    font.setPixelSize(18);
+    font.setPointSize(12);
     overview->setFont(font);
     QPalette palette = overview->palette();
     palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
@@ -65,10 +65,13 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
 
     connect(modeGovern, &SwitchButton::indexChanged, this, &MainPage::setCurrentGovern);
 
+    font.setPointSize(10);
+
     QPushButton *loadSettings = new QPushButton(this);
     loadSettings->setText("Load Settings");
     loadSettings->resize(150, 40);
     loadSettings->move(700, 430);
+    loadSettings->setFont(font);
     connect(loadSettings, &QPushButton::clicked, this, [=]{
         QString filepath = QFileDialog::getOpenFileName(nullptr, "Load", QDir::homePath(), "*.json");
         if (!filepath.isEmpty())
@@ -85,7 +88,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
         if (!filepath.isEmpty())
             CPUInfo::instance().dump(filepath.endsWith(".json") ? filepath : filepath + ".json");
     });
-
+    saveSettings->setFont(font);
 
 }
 

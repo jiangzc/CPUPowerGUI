@@ -18,7 +18,7 @@ SwitchButton::SwitchButton(QWidget *parent) : QWidget(parent)
     palette.setColor(QPalette::Light, QColor(93, 173, 226));        // 悬浮颜色
     this->setPalette(palette);
     QFont font = this->font();
-    font.setPixelSize(16);
+    font.setPointSize(10);
     this->setFont(font);
 
     m_mouse.rx() = m_mouse.ry() = -100;
@@ -149,13 +149,13 @@ void SwitchButton::mouseMoveEvent(QMouseEvent *e)
     update();
 }
 
-void SwitchButton::enterEvent(QEvent *event)
+void SwitchButton::enterEvent(QEvent *)
 {
     isHover = true;
     update();
 }
 
-void SwitchButton::leaveEvent(QEvent *event)
+void SwitchButton::leaveEvent(QEvent *)
 {
     isHover = false;
     update();

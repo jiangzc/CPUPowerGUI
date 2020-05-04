@@ -34,8 +34,12 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     initSettingLines(row);
     // 结束行： 按钮
     QPushButton *applyButton = new QPushButton;
+
     applyButton->setText("Apply");
     applyButton->setFixedWidth(120);
+    auto font = applyButton->font();
+    font.setPointSize(10);
+    applyButton->setFont(font);
     applyButton->setFixedHeight(40);
     connect(applyButton, &QPushButton::clicked, this, &PolicyEditorWidget::applyChanges);
     editorLayout->addWidget(applyButton, row+1, 1, 3, 1, Qt::AlignBottom | Qt::AlignRight);
@@ -87,7 +91,7 @@ void PolicyEditorWidget::initFirstLine(int &row)
     QLabel *cpuID = new QLabel;
     cpuID->setText(QString("CPU %0").arg(core->core_id()));
     QFont font = cpuID->font();
-    font.setPixelSize(28);
+    font.setPointSize(18);
     font.setBold(true);
     cpuID->setFont(font);
     // 选择开关
@@ -108,7 +112,7 @@ void PolicyEditorWidget::initFirstLine(int &row)
     // 提示消息
     popLabel = new QLabel;
     font = popLabel->font();
-    font.setPixelSize(20);
+    font.setPointSize(14);
     popLabel->setFont(font);
     popLabel->setText("");
     popLabel->setFixedSize(200, 60);
