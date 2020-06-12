@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     if (qssFile.open(QIODevice::ReadOnly))
     {
         a.setStyleSheet(qssFile.readAll());
+        qssFile.close();
     }
 
     // qDebug() << QDir::homePath();

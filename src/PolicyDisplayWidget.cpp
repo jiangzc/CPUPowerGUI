@@ -13,18 +13,12 @@
 
 PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScrollArea(parent)
 {
+    this->setObjectName("PolicyDisplayWidget");
     this->core = &_core;
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    this->setPalette(palette);
-    this->setAutoFillBackground(true);
 
     // 展示CPU频率信息控件
     infoList = new QWidget();
-    infoList->setAutoFillBackground(true);
-    infoList->setPalette(palette); //透明背景
-    infoList->setContentsMargins(5,5,5,5);
-
+    infoList->setObjectName("infoList");
 
     // 控件内布局
     infoLayout = new QFormLayout(infoList);
@@ -38,8 +32,6 @@ PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScr
     infoList->adjustSize();
 
     this->setWidget(infoList);
-    this->setFrameStyle(QFrame::NoFrame);
-    QScrollArea::installEventFilter(this);
 
     // 每秒刷新
     timer = new QTimer(this);
@@ -47,7 +39,9 @@ PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScr
         core->update();
         for (const auto &policy : core->policies)
         {
-            this->updateInfoListPolicyValue(policy);
+            QLabel *label = infoList->findChild<QLabel*>(policy.name, Qt::FindDirectChildrenOnly);
+            if (label != nullptr)
+                label->setText(processPolicyValue(policy));
         }
     });
     timer->start(1000);
@@ -89,18 +83,6 @@ QString PolicyDisplayWidget::processPolicyValue(const CPUPolicy &policy)
     return res;
 }
 
-void PolicyDisplayWidget::updateInfoListPolicyValue(const CPUPolicy &policy)
-{
-    for (const auto &item : infoList->children())
-    {
-        if (item->objectName() == policy.name)
-        {
-            QLabel *label = dynamic_cast<QLabel*>(item);
-            if (label != nullptr)
-                label->setText(processPolicyValue(policy));
-        }
-    }
-}
 
 QWidget* PolicyDisplayWidget::getInfoListPolicyValueWidget(const CPUPolicy &policy)
 {
@@ -119,20 +101,5 @@ QSize PolicyDisplayWidget::sizeHint() const
     return QSize(400,500);
 }
 
-bool PolicyDisplayWidget::eventFilter(QObject *obj, QEvent *event)
-{
-    QPainter painter;
-    if (obj == this && event->type() == QEvent::Paint)
-    {
-        painter.begin(this);
-        QBrush brush(QColor(222,222,222,222));
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(brush);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.drawRoundedRect(this->rect(), 12, 12);
-        return true;
-    }
-    else
-        return QScrollArea::eventFilter(obj, event);
-}
+
 

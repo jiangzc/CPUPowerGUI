@@ -120,8 +120,8 @@ QComboBox::drop-down {
     border-bottom-right-radius: 5px;
 
 }
-QComboBox QAbstractItemView::item {
-    height: 25px;
+QAbstractItemView::item {
+    min-height: 40px;
 }
 
 QListView {
@@ -144,3 +144,15 @@ QListView::item:selected {
     background: #1ABC9C;
     color: white;
 }
+
+.PolicyDisplayWidget {
+    background-color: rgba(222,222,222,222);
+    border-style: none;
+    border-radius: 12px;
+}
+
+QWidget#infoList {
+    background-color: rgba(0,0,0,0);
+    margin: 5px;
+}
+

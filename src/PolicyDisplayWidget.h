@@ -16,7 +16,6 @@ public:
 
 protected:
     virtual QSize sizeHint() const override;
-    virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     CPUCore *core;
@@ -25,8 +24,6 @@ private:
     QFormLayout *infoLayout;
     QWidget* getInfoListPolicyValueWidget(const CPUPolicy &policy);
     QString processPolicyValue(const CPUPolicy &policy);
-    void updateInfoListPolicyValue(const CPUPolicy &policy);
-
 
 signals:
 
