@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         abort();
     }
 
-    QFile qssFile(":/res/src/scrollbar.qss");
+    QFile qssFile(":/res/src/ui.qss");
     if (qssFile.open(QIODevice::ReadOnly))
     {
         a.setStyleSheet(qssFile.readAll());
