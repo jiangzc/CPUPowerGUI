@@ -1,4 +1,6 @@
 #include <QHBoxLayout>
+#include <QStyleOption>
+#include <QPainter>
 #include "DisplayCorePage.h"
 #include "CPUInfo.h"
 #include "PolicyDisplayWidget.h"
@@ -9,10 +11,6 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 {
 
     this->core = &_core;
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    this->setPalette(palette);
-    this->setAutoFillBackground(true);
 
     monitor = new PolicyDisplayWidget(_core, this);
     monitor->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -31,5 +29,14 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 void DisplayCorePage::updateInfo()
 {
     editor->updateInfo();
+}
+
+void DisplayCorePage::paintEvent(QPaintEvent *)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
 }
 

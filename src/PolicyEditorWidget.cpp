@@ -21,7 +21,7 @@
 PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidget(parent)
 {
     core = &_core;
-    this->setContentsMargins(5,5,5,5);
+    this->setObjectName("PolicyEditorWidget");
 
     // 控件内布局
     editorLayout = new QGridLayout;
@@ -38,7 +38,7 @@ PolicyEditorWidget::PolicyEditorWidget(CPUCore &_core, QWidget *parent) : QWidge
     applyButton->setText("Apply");
     applyButton->setFixedWidth(120);
     auto font = applyButton->font();
-    font.setPointSize(10);
+    font.setPixelSize(16);
     applyButton->setFont(font);
     applyButton->setFixedHeight(40);
     connect(applyButton, &QPushButton::clicked, this, &PolicyEditorWidget::applyChanges);
@@ -73,12 +73,11 @@ void PolicyEditorWidget::updateInfo()
 
 void PolicyEditorWidget::popMessage(bool ok, QString msg)
 {
-    QPalette palette = popLabel->palette();
     if (ok)
-        palette.setColor(QPalette::ColorRole::WindowText, QColor("#228B22"));
+        popLabel->setStyleSheet("color: #228B22");
     else
-        palette.setColor(QPalette::ColorRole::WindowText, QColor("#CC0000"));
-    popLabel->setPalette(palette);
+        popLabel->setStyleSheet("color: #CC0000");
+
     if (msg.isEmpty())
         msg = ok ? "Succeed" : strerror(errno);
     popLabel->setText(msg);
@@ -112,7 +111,7 @@ void PolicyEditorWidget::initFirstLine(int &row)
     // 提示消息
     popLabel = new QLabel;
     font = popLabel->font();
-    font.setPointSize(14);
+    font.setPixelSize(18);
     popLabel->setFont(font);
     popLabel->setText("");
     popLabel->setFixedSize(200, 60);
@@ -201,9 +200,6 @@ QPair<QWidget*, QWidget*> PolicyEditorWidget::getEdiorPolicyValueWidget(const CP
         spinBox->setMinimum(minValue);
         spinBox->setMaximum(maxValue);
         spinBox->setFixedHeight(30);
-        QPalette palette = spinBox->palette();
-        palette.setColor(QPalette::ColorRole::Highlight, QColor("#1ABC9C"));
-        spinBox->setPalette(palette);
         ret2 = spinBox;
 
         connect(slider, &QSlider::valueChanged, spinBox, &QSpinBox::setValue);
@@ -227,12 +223,10 @@ QPair<QWidget*, QWidget*> PolicyEditorWidget::getEdiorPolicyValueWidget(const CP
 
 void PolicyEditorWidget::paintEvent(QPaintEvent *)
 {
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QBrush brush(QColor(222,222,222,222));
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(brush);
-    painter.drawRoundedRect(this->rect(), 12, 12);
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 QMap<QString, QString> PolicyEditorWidget::dumpPolicySettings()

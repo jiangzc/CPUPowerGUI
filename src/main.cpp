@@ -15,11 +15,12 @@ int main(int argc, char *argv[])
     QCoreApplication::setSetuidAllowed(true);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
-//    if (geteuid() != 0)
-//    {
-//        QMessageBox::critical(nullptr, "Error", "Run it as root user");
-//        abort();
-//    }
+    //  ensure to run it as root user
+    if (geteuid() != 0 && QCoreApplication::applicationDirPath().startsWith("/opt"))
+    {
+        QMessageBox::critical(nullptr, "Error", "Run it as root user");
+        abort();
+    }
 
     QFile qssFile(":/res/src/scrollbar.qss");
     if (qssFile.open(QIODevice::ReadOnly))
@@ -28,8 +29,15 @@ int main(int argc, char *argv[])
         qssFile.close();
     }
 
-    // qDebug() << QDir::homePath();
-
+    QPalette palette = a.palette();
+    palette.setColor(QPalette::ColorRole::Highlight, QColor("#1ABC9C"));
+    palette.setColor(QPalette::ColorRole::WindowText, QColor("#000000"));
+    palette.setColor(QPalette::ColorRole::Text, QColor("#000000"));
+    palette.setColor(QPalette::ColorRole::Window, QColor("#FFFFFF"));
+    palette.setColor(QPalette::ColorRole::Background, QColor("#FFFFFF"));
+    palette.setColor(QPalette::ColorRole::Base, QColor("#FFFFFF"));
+    palette.setColor(QPalette::ColorRole::Button, QColor("#FFFFFF"));
+    a.setPalette(palette);
 
     QFont font = a.font();
     font.setPixelSize(16);

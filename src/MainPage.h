@@ -30,7 +30,6 @@ private:
     QScrollArea *area;
     void paintEvent(QPaintEvent *event);
     QSize sizeHint() const;
-    virtual bool eventFilter(QObject *obj, QEvent *event);
     int detectCurrentGovern();
     void setCurrentGovern(int govern);
 

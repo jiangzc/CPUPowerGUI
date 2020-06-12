@@ -15,7 +15,7 @@ public:
     explicit DisplayCorePage(CPUCore& _core, QWidget *parent = nullptr);
     void updateInfo();
 protected:
-
+    virtual void paintEvent(QPaintEvent *);
 
 private:
     CPUCore *core;

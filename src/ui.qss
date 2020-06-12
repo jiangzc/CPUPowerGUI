@@ -151,8 +151,32 @@ QListView::item:selected {
     border-radius: 12px;
 }
 
-QWidget#infoList {
-    background-color: rgba(0,0,0,0);
-    margin: 5px;
+.PolicyEditorWidget {
+    background-color: rgba(222,222,222,222);
+    border-style: none;
+    border-radius: 12px;
+    padding: 5px;
 }
 
+.MainPage {
+    background-color: rgba(222,222,222,222);
+    border-style: none;
+    border-radius: 12px;
+    padding: 5px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+QWidget#infoList {
+    background-color: rgba(0,0,0,0);
+    padding: 5px;
+}
+
+QLabel#overview {
+    padding: 20px;
+    background-color: rgba(0,0,0,0);
+}
+
+.QScrollArea, DisplayCorePage {
+    background-color: rgba(0,0,0,0);
+}

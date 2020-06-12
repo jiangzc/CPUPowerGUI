@@ -6,6 +6,7 @@
 #include <QScrollArea>
 #include <QFileDialog>
 #include <QDebug>
+#include <QStyleOption>
 #include <QPushButton>
 #include <QEvent>
 #include "MainPage.h"
@@ -15,6 +16,8 @@
 
 MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuInfo(cpuInfo)
 {
+    this->setObjectName("MainPage");
+
     nameLabel = new QLabel(this);
     QFont font = nameLabel->font();
     font.setPointSize(15);
@@ -24,26 +27,17 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     nameLabel->adjustSize();
 
     overview = new QLabel(this);
+    overview->setObjectName("overview");
     font.setPointSize(12);
     overview->setFont(font);
-    QPalette palette = overview->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    overview->setAutoFillBackground(true);
-    overview->setPalette(palette);
-    overview->setMargin(20);
     updateOverview();
     overview->adjustSize();
 
     area = new QScrollArea(this);
-    palette = area->palette();
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); //透明背景
-    area->setPalette(palette);
-    area->setAutoFillBackground(true);
     area->setFrameStyle(QFrame::NoFrame);
     area->setWidget(overview);
     area->move(290, 100);
     area->setFixedSize(800,200);
-    area->installEventFilter(this);
 
     cpuLogo.load(":/res/pic/cpulogo.png");
 
@@ -65,7 +59,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
 
     connect(modeGovern, &SwitchButton::indexChanged, this, &MainPage::setCurrentGovern);
 
-    font.setPointSize(10);
+    font.setPixelSize(16);
 
     QPushButton *loadSettings = new QPushButton(this);
     loadSettings->setText("Load Settings");
@@ -94,15 +88,13 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
 
 void MainPage::paintEvent(QPaintEvent *)
 {
-    // 半透明背景
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QBrush brush(QColor(222,222,222,222));
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(brush);
-    painter.drawRoundedRect(50, 0, width()-100, height()-30, 12, 12);
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
     // CPU Logo
-    painter.drawPixmap(QRect(50, 10, 250, 250), cpuLogo, cpuLogo.rect());
+    p.drawPixmap(QRect(50, 10, 250, 250), cpuLogo, cpuLogo.rect());
 }
 
 QSize MainPage::sizeHint() const
@@ -110,24 +102,6 @@ QSize MainPage::sizeHint() const
     return QSize(1100, 500);
 }
 
-bool MainPage::eventFilter(QObject *obj, QEvent *event)
-{
-    QPainter painter;
-    if (obj == area && event->type() == QEvent::Paint)
-    {
-        painter.begin(area);
-        QBrush brush(QColor(222,222,222,0));
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(brush);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.drawRoundedRect(area->rect(), 12, 12);
-        return true;
-    }
-    else
-    {
-        return QWidget::eventFilter(obj, event);
-    }
-}
 
 int MainPage::detectCurrentGovern()
 {
