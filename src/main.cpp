@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     a.setPalette(palette);
 
     QFont font = a.font();
-    font.setPixelSize(16);
+    font.setPixelSize(17);
     a.setFont(font);
 
     MainWindow w;
