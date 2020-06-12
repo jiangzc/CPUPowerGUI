@@ -16,9 +16,10 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     header->append("All");
     for (int i = 0; i < CPUInfo::instance().cores.count(); i++)
     {
-        header->append("CPU " + QString::number(i));
+        header->append("Core " + QString::number(i));
     }
     header->adjustSize();
+    header->setCurrentIndex(0);
     mainLayout->addSpacing(20);
     header->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     mainLayout->addWidget(header, 0, Qt::AlignCenter);
