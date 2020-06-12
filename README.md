@@ -17,11 +17,11 @@ Feature:
 
 ## ScreenShot
 
-<img src="./pic/screenshot1.png" width="800"/>
+<img src="./pic/screenshot1.png" width="600"/>
 
-<img src="./pic/screenshot2.png" width="800"/>
+<img src="./pic/screenshot2.png" width="600"/>
 
-<img src="./pic/screenshot3.png" width="800"/>
+<img src="./pic/screenshot3.png" width="600"/>
 
 
 
