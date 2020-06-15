@@ -2,21 +2,19 @@
 #define MAINPAGE_H
 
 #include <QWidget>
-
+#include "UpdateInfoInterface.h"
 class CPUInfo;
 class QLabel;
 class QPixmap;
-class QTimer;
 class SwitchButton;
 class QScrollArea;
 
-class MainPage : public QWidget
+class MainPage : public QWidget, public UpdateInfoInterface
 {
     Q_OBJECT
 public:
     explicit MainPage(CPUInfo &cpuInfo, QWidget *parent = nullptr);
-    void updateInfo();
-
+    void updateInfo() override;
 signals:
 
 
@@ -24,7 +22,7 @@ private:
     CPUInfo &m_cpuInfo;
     QLabel *nameLabel;
     QLabel *overview;
-    QTimer *timer;
+
     QPixmap cpuLogo;
     SwitchButton *modeGovern;
     QScrollArea *area;

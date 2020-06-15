@@ -85,10 +85,12 @@ void SwitchButton::setCurrentIndex(int index, bool sig)
 {
     if (index != m_currentIndex)
     {
+        if (sig)
+        {
+            emit indexChanged(index);
+        }
         m_currentIndex = index;
         update();
-        if (sig)
-            emit indexChanged(index);
     }
 
 }

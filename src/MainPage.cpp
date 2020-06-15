@@ -2,7 +2,6 @@
 #include <QBrush>
 #include <QLabel>
 #include <QRect>
-#include <QTimer>
 #include <QScrollArea>
 #include <QFileDialog>
 #include <QDebug>
@@ -40,11 +39,6 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     area->setFixedSize(800,200);
 
     cpuLogo.load(":/res/pic/cpulogo.png");
-
-    timer = new QTimer(this);
-    timer->setInterval(1000);
-    connect(timer, &QTimer::timeout, this, &MainPage::updateOverview);
-    timer->start();
 
     modeGovern = new SwitchButton(this);
     modeGovern->append("Performance");

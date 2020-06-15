@@ -29,6 +29,7 @@ DisplayCorePage::DisplayCorePage(CPUCore& _core, QWidget *parent) : QWidget(pare
 void DisplayCorePage::updateInfo()
 {
     editor->updateInfo();
+    monitor->updateInfo();
 }
 
 void DisplayCorePage::paintEvent(QPaintEvent *)

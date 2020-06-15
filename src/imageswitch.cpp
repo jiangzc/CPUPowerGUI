@@ -1,6 +1,4 @@
-﻿#pragma execution_character_set("utf-8")
-
-#include "imageswitch.h"
+﻿#include "imageswitch.h"
 #include "qpainter.h"
 #include "qdebug.h"
 

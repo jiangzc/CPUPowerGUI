@@ -1,3 +1,4 @@
+#include <QWidget>
 #include <QPainter>
 #include <QStackedLayout>
 #include <QVBoxLayout>

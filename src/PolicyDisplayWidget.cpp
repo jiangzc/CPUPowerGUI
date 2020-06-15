@@ -1,5 +1,4 @@
 #include <QScrollArea>
-#include <QTimer>
 #include <QLabel>
 #include <QEvent>
 #include <QDebug>
@@ -33,19 +32,17 @@ PolicyDisplayWidget::PolicyDisplayWidget(CPUCore &_core, QWidget *parent) : QScr
 
     this->setWidget(infoList);
 
-    // 每秒刷新
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, [=]{
-        core->update();
-        for (const auto &policy : core->policies)
-        {
-            QLabel *label = infoList->findChild<QLabel*>(policy.name, Qt::FindDirectChildrenOnly);
-            if (label != nullptr)
-                label->setText(processPolicyValue(policy));
-        }
-    });
-    timer->start(1000);
+}
 
+void PolicyDisplayWidget::updateInfo()
+{
+    core->update();
+    for (const auto &policy : core->policies)
+    {
+        QLabel *label = infoList->findChild<QLabel*>(policy.name, Qt::FindDirectChildrenOnly);
+        if (label != nullptr)
+            label->setText(processPolicyValue(policy));
+    }
 }
 
 

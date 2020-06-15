@@ -44,6 +44,7 @@ private:
 
 signals:
     void indexChanged(int);
+
 public slots:
 };
 

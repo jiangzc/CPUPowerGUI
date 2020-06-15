@@ -47,6 +47,7 @@ HEADERS += \
         src/PolicyDisplayWidget.h \
         src/PolicyEditorWidget.h \
         src/SwitchButton.h \
+        src/UpdateInfoInterface.h \
         src/imageswitch.h
 
 # Default rules for deployment.

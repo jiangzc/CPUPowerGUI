@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPair>
+#include "UpdateInfoInterface.h"
 
 class CPUPolicy;
 class CPUCore;
