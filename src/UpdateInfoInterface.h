@@ -3,6 +3,7 @@
 
 class UpdateInfoInterface
 {
+public:
     virtual void updateInfo() = 0;
 };
 

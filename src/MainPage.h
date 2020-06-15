@@ -15,6 +15,7 @@ class MainPage : public QWidget, public UpdateInfoInterface
 public:
     explicit MainPage(CPUInfo &cpuInfo, QWidget *parent = nullptr);
     void updateInfo() override;
+    void updateGovern();
 signals:
 
 
@@ -26,8 +27,8 @@ private:
     QPixmap cpuLogo;
     SwitchButton *modeGovern;
     QScrollArea *area;
-    void paintEvent(QPaintEvent *event);
-    QSize sizeHint() const;
+    void paintEvent(QPaintEvent *event) override;
+    QSize sizeHint() const override;
     int detectCurrentGovern();
     void setCurrentGovern(int govern);
 

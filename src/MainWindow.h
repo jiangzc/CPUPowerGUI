@@ -6,6 +6,8 @@
 class SwitchButton;
 class QStackedLayout;
 class QVBoxLayout;
+class QTimer;
+
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -18,6 +20,7 @@ private:
     SwitchButton *header;
     QVBoxLayout *mainLayout;
     QStackedLayout *stackLayout;
+    QTimer *timer;
 signals:
 
 public slots:

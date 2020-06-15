@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QStackedLayout>
 #include <QVBoxLayout>
+#include <QTimer>
 #include <QDebug>
 #include "MainWindow.h"
 #include "MainPage.h"
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
         auto corePage = new DisplayCorePage(core);
         stackLayout->addWidget(corePage);
     }
+    stackLayout->setCurrentIndex(0);
     mainLayout->addLayout(stackLayout);
     mainLayout->addSpacing(20);
     resize(1200, 700);
@@ -41,15 +43,18 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
         if (index == 0)
         {
             MainPage *p = dynamic_cast<MainPage*>(stackLayout->widget(index));
-            p->updateInfo();
-        }
-        else
-        {
-            DisplayCorePage *p = dynamic_cast<DisplayCorePage*>(stackLayout->widget(index));
-            p->updateInfo();
+            p->updateGovern();
         }
         stackLayout->setCurrentIndex(index);
     });
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=]{
+        UpdateInfoInterface *updatePage = dynamic_cast<UpdateInfoInterface *>(stackLayout->currentWidget());
+        if (updatePage != nullptr)
+            updatePage->updateInfo();
+    });
+    timer->start(1000);
 }
 
 void MainWindow::paintEvent(QPaintEvent *)

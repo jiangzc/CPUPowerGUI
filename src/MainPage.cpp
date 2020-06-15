@@ -50,6 +50,7 @@ MainPage::MainPage(CPUInfo &cpuInfo, QWidget *parent) : QWidget(parent), m_cpuIn
     modeGovern->move(250, 330);
     modeGovern->resize(800, 40);
     updateInfo();
+    updateGovern();
 
     connect(modeGovern, &SwitchButton::indexChanged, this, &MainPage::setCurrentGovern);
 
@@ -161,7 +162,11 @@ void MainPage::setCurrentGovern(int govern)
 
 void MainPage::updateInfo()
 {
-    updateOverview();
+    updateOverview(); 
+}
+
+void MainPage::updateGovern()
+{
     modeGovern->setCurrentIndex(detectCurrentGovern(), false);
 }
 
@@ -171,6 +176,7 @@ void MainPage::updateOverview()
     info += QString("Driver: %1\n\n").arg(m_cpuInfo.cores[0].policies["scaling_driver"].value);
     for (auto &core : m_cpuInfo.cores)
     {
+        core.update();
         info += QString("CPU %1 : isEnabled = %2,\t %3 = %4,\t %5 = %6\n")
         .arg(core.core_id()).arg(core.isEnabled())
         .arg(KnownCPUPolicy::scaling_cur_freq).arg(core.policies[KnownCPUPolicy::scaling_cur_freq].value)
